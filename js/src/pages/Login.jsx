@@ -17,7 +17,7 @@ import { useI18n } from '../i18n/useI18n'
 
 function buildLoginSchema(t) {
   return z.object({
-    email: z.string().email(t('validation.email_invalid')),
+    email: z.email(t('validation.email_invalid')),
     password: z.string().min(1, t('validation.password_required')),
   })
 }

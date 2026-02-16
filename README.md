@@ -118,7 +118,6 @@ const http = axios.create({
 ## Лимиты
 
 - Login: 5 попыток / минуту / `ip+email`
-- Остальные auth-эндпоинты: 10 / минуту / `ip`
 - Verification: 6 / минуту
 
 ## Audit Logs

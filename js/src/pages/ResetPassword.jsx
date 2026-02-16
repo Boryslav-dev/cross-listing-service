@@ -17,7 +17,7 @@ import { useI18n } from '../i18n/useI18n'
 function buildResetSchema(t) {
   return z
     .object({
-      email: z.string().email(t('validation.email_invalid')),
+      email: z.email(t('validation.email_invalid')),
       token: z.string().min(1, t('validation.token_missing')),
       password: z.string().min(8, t('validation.password_min')),
       password_confirmation: z.string().min(8, t('validation.password_min')),
