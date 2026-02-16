@@ -12,7 +12,6 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Support\AuditLogger;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,12 +35,11 @@ class AuthController extends Controller
             'role' => UserRole::MEMBER,
         ]);
 
-        event(new Registered($user));
-
         Auth::login($user);
         $this->regenerateSession($request);
 
         $user->forceFill([
+            'email_verified_at' => now(),
             'last_login_at' => now(),
         ])->save();
 
@@ -50,7 +48,7 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => UserResource::make($user),
-            'requires_email_verification' => ! $user->hasVerifiedEmail(),
+            'requires_email_verification' => false,
         ], 201);
     }
 
@@ -147,6 +145,7 @@ class AuthController extends Controller
         $this->regenerateSession($request);
 
         $user->forceFill([
+            'email_verified_at' => $user->email_verified_at ?: now(),
             'last_login_at' => now(),
         ])->save();
 
@@ -187,14 +186,6 @@ class AuthController extends Controller
 
     public function sendEmailVerificationNotification(Request $request): JsonResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        if (! $user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
-            AuditLogger::log($request, 'auth.email_verification_requested', $user);
-        }
-
         return response()->json([
             'ok' => true,
         ]);

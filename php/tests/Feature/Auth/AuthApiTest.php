@@ -4,7 +4,6 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -33,11 +32,10 @@ class AuthApiTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('user.email', 'jane@example.com')
             ->assertJsonPath('user.role', 'member')
-            ->assertJsonPath('requires_email_verification', true);
+            ->assertJsonPath('requires_email_verification', false);
 
         $user = User::query()->where('email', 'jane@example.com')->firstOrFail();
-
-        Notification::assertSentTo($user, VerifyEmail::class);
+        $this->assertNotNull($user->email_verified_at);
 
         $invalidResponse = $this->postJson('/api/v1/auth/register', [
             'email' => 'not-valid-email',

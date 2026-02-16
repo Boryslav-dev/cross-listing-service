@@ -19,7 +19,7 @@ function buildRegisterSchema(t) {
   return z
     .object({
       name: z.string().max(255, t('validation.name_max')).optional().or(z.literal('')),
-      email: z.string().email(t('validation.email_invalid')),
+      email: z.email(t('validation.email_invalid')),
       password: z.string().min(8, t('validation.password_min')),
       password_confirmation: z.string().min(8, t('validation.password_min')),
     })
@@ -35,7 +35,6 @@ export function RegisterPage() {
   const googleLoginUrl = getGoogleLoginUrl()
   const registerSchema = useMemo(() => buildRegisterSchema(t), [t])
   const [formError, setFormError] = useState('')
-  const [infoMessage, setInfoMessage] = useState('')
 
   const {
     register,
@@ -54,14 +53,9 @@ export function RegisterPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError('')
-    setInfoMessage('')
 
     try {
-      const response = await registerAction(values)
-
-      if (response.requires_email_verification) {
-        setInfoMessage(t('auth.register_verify_hint'))
-      }
+      await registerAction(values)
     } catch (error) {
       applyServerValidationErrors(error, setError)
       setFormError(buildFormErrorMessage(error, t))
@@ -81,7 +75,6 @@ export function RegisterPage() {
         </Typography>
       }
     >
-      <Banner variant="success">{infoMessage}</Banner>
       <Banner variant="error">{formError}</Banner>
 
       <Stack spacing={0.75} component="form" onSubmit={onSubmit}>

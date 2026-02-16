@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   Box,
@@ -15,27 +14,10 @@ import { useI18n } from '../i18n/useI18n'
 import { LanguageSwitcher } from '../components/ui/LanguageSwitcher'
 
 export function DashboardPage() {
-  const { user, logout, resendVerificationEmail } = useAuth()
+  const { user, logout } = useAuth()
   const { t } = useI18n()
   const [searchParams] = useSearchParams()
-  const [isResending, setIsResending] = useState(false)
-  const [verificationError, setVerificationError] = useState('')
-
-  const isVerified = Boolean(user?.email_verified_at)
   const oauthSuccess = searchParams.get('oauth') === 'google'
-
-  const handleResend = async () => {
-    setVerificationError('')
-    setIsResending(true)
-
-    try {
-      await resendVerificationEmail()
-    } catch {
-      setVerificationError(t('dashboard.resend_failed'))
-    } finally {
-      setIsResending(false)
-    }
-  }
 
   const roleKey = user?.role ?? 'member'
   const translatedRole = t(`roles.${roleKey}`)
@@ -82,23 +64,6 @@ export function DashboardPage() {
           </Typography>
 
           {oauthSuccess ? <Banner variant="success">{t('dashboard.google_success')}</Banner> : null}
-
-          {!isVerified ? (
-            <>
-              <Banner variant="error">{t('dashboard.verify_required')}</Banner>
-
-              {verificationError ? <Banner variant="error">{verificationError}</Banner> : null}
-
-              <Button
-                variant="outlined"
-                onClick={handleResend}
-                disabled={isResending}
-                sx={{ alignSelf: 'flex-start' }}
-              >
-                {isResending ? t('buttons.sending') : t('buttons.resend_email')}
-              </Button>
-            </>
-          ) : null}
 
           <Divider />
 
