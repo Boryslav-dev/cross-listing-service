@@ -1,0 +1,14 @@
+.git
+.gitignore
+.idea
+.vscode
+.DS_Store
+
+php/vendor
+php/node_modules
+js/node_modules
+
+php/storage/logs
+php/storage/framework/cache
+php/storage/framework/sessions
+php/storage/framework/views

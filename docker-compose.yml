@@ -1,0 +1,80 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - ./php:/var/www/html
+      - php_vendor:/var/www/html/vendor
+      - ./docker/nginx/default.conf:/etc/nginx/http.d/default.conf:ro
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: "1"
+    ports:
+      - "${BACKEND_BIND_IP:-0.0.0.0}:${BACKEND_HOST_PORT:-18080}:8000"
+      - "${FRONTEND_BIND_IP:-0.0.0.0}:${FRONTEND_HOST_PORT:-5173}:5173"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      js:
+        condition: service_started
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.10
+
+  js:
+    build:
+      context: .
+      dockerfile: docker/js/Dockerfile
+    working_dir: /app
+    volumes:
+      - ./js:/app
+      - js_node_modules:/app/node_modules
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.20
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: cross_listing
+      POSTGRES_USER: cross_listing
+      POSTGRES_PASSWORD: cross_listing
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cross_listing -d cross_listing"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.30
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.40
+
+volumes:
+  postgres_data:
+  redis_data:
+  php_vendor:
+  js_node_modules:
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
