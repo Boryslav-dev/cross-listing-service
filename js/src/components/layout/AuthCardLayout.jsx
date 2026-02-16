@@ -1,6 +1,10 @@
 import { Box, Card, Stack, Typography } from '@mui/material'
+import { useI18n } from '../../i18n/useI18n'
+import { LanguageSwitcher } from '../ui/LanguageSwitcher'
 
 export function AuthCardLayout({ title, subtitle, children, footer }) {
+  const { t } = useI18n()
+
   return (
     <Box
       sx={{
@@ -25,16 +29,19 @@ export function AuthCardLayout({ title, subtitle, children, footer }) {
         }}
       >
         <Stack spacing={2.5} sx={{ p: { xs: 2.5, sm: 3.5 } }}>
-          <Typography
-            variant="overline"
-            sx={{
-              color: 'primary.main',
-              letterSpacing: '0.14em',
-              fontWeight: 800,
-            }}
-          >
-            Cross Listing SaaS
-          </Typography>
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+            <Typography
+              variant="overline"
+              sx={{
+                color: 'primary.main',
+                letterSpacing: '0.14em',
+                fontWeight: 800,
+              }}
+            >
+              {t('app.name')}
+            </Typography>
+            <LanguageSwitcher compact />
+          </Stack>
 
           <Stack spacing={1}>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>

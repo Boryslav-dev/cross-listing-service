@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Link as MuiLink, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -11,12 +11,17 @@ import { Banner } from '../components/ui/Banner'
 import { InputField } from '../components/ui/InputField'
 import { SubmitButton } from '../components/ui/SubmitButton'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
+import { useI18n } from '../i18n/useI18n'
 
-const forgotSchema = z.object({
-  email: z.string().email('Введите корректный email'),
-})
+function buildForgotSchema(t) {
+  return z.object({
+    email: z.string().email(t('validation.email_invalid')),
+  })
+}
 
 export function ForgotPasswordPage() {
+  const { t } = useI18n()
+  const forgotSchema = useMemo(() => buildForgotSchema(t), [t])
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
 
@@ -38,23 +43,23 @@ export function ForgotPasswordPage() {
 
     try {
       await forgotPassword(values)
-      setFormSuccess('Если email существует, мы отправили ссылку для сброса пароля.')
-      toast.success('Письмо отправлено')
+      setFormSuccess(t('auth.forgot_success'))
+      toast.success(t('toasts.forgot_sent'))
     } catch (error) {
       applyServerValidationErrors(error, setError)
-      setFormError(buildFormErrorMessage(error))
+      setFormError(buildFormErrorMessage(error, t))
     }
   })
 
   return (
     <AuthCardLayout
-      title="Восстановление пароля"
-      subtitle="Введите email, и мы отправим ссылку для сброса"
+      title={t('auth.forgot_title')}
+      subtitle={t('auth.forgot_subtitle')}
       footer={
         <Typography variant="body2" color="text.secondary">
-          Вспомнили пароль?{' '}
+          {t('links.remembered_password')}{' '}
           <MuiLink component={Link} to="/login" underline="hover">
-            Войти
+            {t('links.sign_in')}
           </MuiLink>
         </Typography>
       }
@@ -66,7 +71,7 @@ export function ForgotPasswordPage() {
         <InputField
           id="email"
           type="email"
-          label="Email"
+          label={t('common.email')}
           autoComplete="email"
           error={errors.email?.message}
           disabled={isSubmitting}
@@ -74,7 +79,7 @@ export function ForgotPasswordPage() {
         />
 
         <SubmitButton type="submit" isLoading={isSubmitting}>
-          Отправить ссылку
+          {t('buttons.send_link')}
         </SubmitButton>
       </Stack>
     </AuthCardLayout>

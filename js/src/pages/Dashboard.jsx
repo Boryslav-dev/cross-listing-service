@@ -11,9 +11,12 @@ import {
 } from '@mui/material'
 import { Banner } from '../components/ui/Banner'
 import { useAuth } from '../auth/useAuth'
+import { useI18n } from '../i18n/useI18n'
+import { LanguageSwitcher } from '../components/ui/LanguageSwitcher'
 
 export function DashboardPage() {
   const { user, logout, resendVerificationEmail } = useAuth()
+  const { t } = useI18n()
   const [searchParams] = useSearchParams()
   const [isResending, setIsResending] = useState(false)
   const [verificationError, setVerificationError] = useState('')
@@ -28,11 +31,14 @@ export function DashboardPage() {
     try {
       await resendVerificationEmail()
     } catch {
-      setVerificationError('Не удалось отправить письмо подтверждения. Попробуйте позже.')
+      setVerificationError(t('dashboard.resend_failed'))
     } finally {
       setIsResending(false)
     }
   }
+
+  const roleKey = user?.role ?? 'member'
+  const translatedRole = t(`roles.${roleKey}`)
 
   return (
     <Box
@@ -59,26 +65,27 @@ export function DashboardPage() {
         }}
       >
         <Stack spacing={2}>
-          <Typography
-            variant="overline"
-            sx={{ color: 'primary.main', letterSpacing: '0.14em', fontWeight: 800 }}
-          >
-            Cross Listing SaaS
-          </Typography>
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+            <Typography
+              variant="overline"
+              sx={{ color: 'primary.main', letterSpacing: '0.14em', fontWeight: 800 }}
+            >
+              {t('app.name')}
+            </Typography>
+            <LanguageSwitcher compact />
+          </Stack>
           <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
-            Рабочее пространство
+            {t('dashboard.title')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Базовый dashboard-заглушка для защищенной зоны /app
+            {t('dashboard.subtitle')}
           </Typography>
 
-          {oauthSuccess ? <Banner variant="success">Вход через Google выполнен успешно.</Banner> : null}
+          {oauthSuccess ? <Banner variant="success">{t('dashboard.google_success')}</Banner> : null}
 
           {!isVerified ? (
             <>
-              <Banner variant="error">
-                Подтвердите email, чтобы открыть полный доступ к функционалу.
-              </Banner>
+              <Banner variant="error">{t('dashboard.verify_required')}</Banner>
 
               {verificationError ? <Banner variant="error">{verificationError}</Banner> : null}
 
@@ -88,7 +95,7 @@ export function DashboardPage() {
                 disabled={isResending}
                 sx={{ alignSelf: 'flex-start' }}
               >
-                {isResending ? 'Отправка...' : 'Отправить письмо снова'}
+                {isResending ? t('buttons.sending') : t('buttons.resend_email')}
               </Button>
             </>
           ) : null}
@@ -97,7 +104,7 @@ export function DashboardPage() {
 
           <Stack spacing={1}>
             <Typography variant="body2" color="text.secondary">
-              Email
+              {t('common.email')}
             </Typography>
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
               {user?.email}
@@ -106,17 +113,21 @@ export function DashboardPage() {
 
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant="body2" color="text.secondary">
-              Role:
+              {t('common.role')}:
             </Typography>
-            <Chip color="primary" label={user?.role ?? 'member'} size="small" />
+            <Chip
+              color="primary"
+              label={translatedRole === `roles.${roleKey}` ? roleKey : translatedRole}
+              size="small"
+            />
           </Stack>
 
           <Typography variant="body2" color="text.secondary">
-            Last login: {user?.last_login_at ?? 'Текущая сессия'}
+            {t('common.last_login')}: {user?.last_login_at ?? t('common.current_session')}
           </Typography>
 
           <Button variant="contained" color="primary" onClick={logout} sx={{ alignSelf: 'flex-start' }}>
-            Logout
+            {t('common.logout')}
           </Button>
         </Stack>
       </Card>

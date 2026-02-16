@@ -17,20 +17,20 @@ export function applyServerValidationErrors(error, setError) {
   })
 }
 
-export function buildFormErrorMessage(error) {
+export function buildFormErrorMessage(error, t) {
   const status = error?.response?.status
 
   if (status === 429) {
-    return 'Слишком много попыток, попробуйте позже.'
+    return t('errors.too_many_attempts')
   }
 
   if (status === 401) {
-    return 'Неверные учетные данные.'
+    return t('errors.invalid_credentials')
   }
 
   if (status === 422) {
-    return error?.response?.data?.message ?? 'Проверьте введенные данные.'
+    return error?.response?.data?.message ?? t('errors.invalid_data')
   }
 
-  return 'Произошла ошибка сервера. Попробуйте позже.'
+  return t('errors.server')
 }

@@ -97,9 +97,9 @@ class AuthController extends Controller
             return redirect()->away($this->frontendUrl('/login?oauth=error'));
         }
 
-        $email = Str::lower((string) $googleUser->getEmail());
-        $googleId = (string) $googleUser->getId();
-        $displayName = (string) ($googleUser->getName() ?: $googleUser->getNickname());
+        $email = Str::lower($googleUser->getEmail());
+        $googleId = $googleUser->getId();
+        $displayName = ($googleUser->getName() ?: $googleUser->getNickname());
 
         if ($googleId === '' || $email === '') {
             return redirect()->away($this->frontendUrl('/login?oauth=missing_data'));
@@ -112,7 +112,7 @@ class AuthController extends Controller
 
         $created = false;
 
-        if (! $user) {
+        if (!$user) {
             $created = true;
 
             $user = User::query()->create([
@@ -126,15 +126,15 @@ class AuthController extends Controller
         } else {
             $payload = [];
 
-            if (! $user->google_id) {
+            if (!$user->google_id) {
                 $payload['google_id'] = $googleId;
             }
 
-            if (! $user->email_verified_at) {
+            if (!$user->email_verified_at) {
                 $payload['email_verified_at'] = now();
             }
 
-            if (! $user->name && $displayName !== '') {
+            if (!$user->name && $displayName !== '') {
                 $payload['name'] = $displayName;
             }
 
@@ -204,16 +204,16 @@ class AuthController extends Controller
     {
         $user = User::query()->findOrFail($id);
 
-        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
             abort(403);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
             AuditLogger::log($request, 'auth.email_verified', $user);
         }
 
-        $redirectUrl = rtrim((string) config('app.frontend_url'), '/').'/email-verified?verified=1';
+        $redirectUrl = rtrim(config('app.frontend_url'), '/').'/email-verified?verified=1';
 
         return redirect()->away($redirectUrl);
     }
@@ -286,6 +286,6 @@ class AuthController extends Controller
 
     private function frontendUrl(string $path): string
     {
-        return rtrim((string) config('app.frontend_url'), '/').$path;
+        return rtrim(config('app.frontend_url'), '/').$path;
     }
 }

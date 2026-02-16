@@ -4,12 +4,14 @@ import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import { useI18n } from '../../i18n/useI18n'
 
 export const PasswordField = forwardRef(function PasswordField(
   { id, label, error, helperText, disabled, ...props },
   ref,
 ) {
   const [showPassword, setShowPassword] = useState(false)
+  const { t } = useI18n()
 
   return (
     <TextField
@@ -28,7 +30,7 @@ export const PasswordField = forwardRef(function PasswordField(
               onClick={() => setShowPassword((prev) => !prev)}
               edge="end"
               disabled={disabled}
-              aria-label="toggle password visibility"
+              aria-label={t('common.toggle_password_visibility')}
             >
               {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
             </IconButton>

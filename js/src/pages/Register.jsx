@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Divider, Link as MuiLink, Stack, Typography } from '@mui/material'
 import GoogleIcon from '@mui/icons-material/Google'
@@ -13,22 +13,27 @@ import { SubmitButton } from '../components/ui/SubmitButton'
 import { useAuth } from '../auth/useAuth'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
 import { getGoogleLoginUrl } from '../api/auth'
+import { useI18n } from '../i18n/useI18n'
 
-const registerSchema = z
-  .object({
-    name: z.string().max(255, 'Максимум 255 символов').optional().or(z.literal('')),
-    email: z.string().email('Введите корректный email'),
-    password: z.string().min(8, 'Минимум 8 символов'),
-    password_confirmation: z.string().min(8, 'Минимум 8 символов'),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    path: ['password_confirmation'],
-    message: 'Пароли не совпадают',
-  })
+function buildRegisterSchema(t) {
+  return z
+    .object({
+      name: z.string().max(255, t('validation.name_max')).optional().or(z.literal('')),
+      email: z.string().email(t('validation.email_invalid')),
+      password: z.string().min(8, t('validation.password_min')),
+      password_confirmation: z.string().min(8, t('validation.password_min')),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      path: ['password_confirmation'],
+      message: t('validation.passwords_mismatch'),
+    })
+}
 
 export function RegisterPage() {
   const { register: registerAction } = useAuth()
+  const { t } = useI18n()
   const googleLoginUrl = getGoogleLoginUrl()
+  const registerSchema = useMemo(() => buildRegisterSchema(t), [t])
   const [formError, setFormError] = useState('')
   const [infoMessage, setInfoMessage] = useState('')
 
@@ -55,23 +60,23 @@ export function RegisterPage() {
       const response = await registerAction(values)
 
       if (response.requires_email_verification) {
-        setInfoMessage('Проверьте почту и подтвердите email для полного доступа.')
+        setInfoMessage(t('auth.register_verify_hint'))
       }
     } catch (error) {
       applyServerValidationErrors(error, setError)
-      setFormError(buildFormErrorMessage(error))
+      setFormError(buildFormErrorMessage(error, t))
     }
   })
 
   return (
     <AuthCardLayout
-      title="Создать аккаунт"
-      subtitle="Управляйте публикациями и продажами в одном месте"
+      title={t('auth.register_title')}
+      subtitle={t('auth.subtitle')}
       footer={
         <Typography variant="body2" color="text.secondary">
-          Уже есть аккаунт?{' '}
+          {t('links.already_account')}{' '}
           <MuiLink component={Link} to="/login" underline="hover">
-            Войти
+            {t('links.sign_in')}
           </MuiLink>
         </Typography>
       }
@@ -83,7 +88,7 @@ export function RegisterPage() {
         <InputField
           id="name"
           type="text"
-          label="Имя"
+          label={t('common.name')}
           autoComplete="name"
           error={errors.name?.message}
           disabled={isSubmitting}
@@ -93,7 +98,7 @@ export function RegisterPage() {
         <InputField
           id="email"
           type="email"
-          label="Email"
+          label={t('common.email')}
           autoComplete="email"
           error={errors.email?.message}
           disabled={isSubmitting}
@@ -102,7 +107,7 @@ export function RegisterPage() {
 
         <PasswordField
           id="password"
-          label="Пароль"
+          label={t('common.password')}
           autoComplete="new-password"
           error={errors.password?.message}
           disabled={isSubmitting}
@@ -111,7 +116,7 @@ export function RegisterPage() {
 
         <PasswordField
           id="password_confirmation"
-          label="Подтверждение пароля"
+          label={t('common.password_confirmation')}
           autoComplete="new-password"
           error={errors.password_confirmation?.message}
           disabled={isSubmitting}
@@ -119,10 +124,10 @@ export function RegisterPage() {
         />
 
         <SubmitButton type="submit" isLoading={isSubmitting}>
-          Зарегистрироваться
+          {t('buttons.register')}
         </SubmitButton>
 
-        <Divider sx={{ my: 1 }}>или</Divider>
+        <Divider sx={{ my: 1 }}>{t('common.or')}</Divider>
 
         <Button
           variant="outlined"
@@ -131,7 +136,7 @@ export function RegisterPage() {
           href={googleLoginUrl}
           startIcon={<GoogleIcon />}
         >
-          Продолжить с Google
+          {t('buttons.google_register')}
         </Button>
       </Stack>
     </AuthCardLayout>

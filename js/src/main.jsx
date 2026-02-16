@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import App from './App'
 import { AuthProvider } from './auth/AuthProvider'
+import { I18nProvider } from './i18n/I18nProvider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,10 +53,12 @@ createRoot(document.getElementById('root')).render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
-          <AuthProvider>
-            <App />
-            <Toaster position="top-right" />
-          </AuthProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <App />
+              <Toaster position="top-right" />
+            </AuthProvider>
+          </I18nProvider>
         </BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>

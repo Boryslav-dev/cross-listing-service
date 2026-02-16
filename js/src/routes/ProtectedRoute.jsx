@@ -1,9 +1,11 @@
 import { Navigate } from 'react-router-dom'
 import { Box, CircularProgress, Paper, Typography } from '@mui/material'
 import { useAuth } from '../auth/useAuth'
+import { useI18n } from '../i18n/useI18n'
 
 export function ProtectedRoute({ children }) {
   const { isLoading, isAuthenticated } = useAuth()
+  const { t } = useI18n()
 
   if (isLoading) {
     return (
@@ -31,7 +33,7 @@ export function ProtectedRoute({ children }) {
           }}
         >
           <CircularProgress size={20} />
-          <Typography variant="body2">Загрузка...</Typography>
+          <Typography variant="body2">{t('common.loading')}</Typography>
         </Paper>
       </Box>
     )

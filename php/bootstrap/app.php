@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+        $middleware->api(prepend: [
+            \App\Http\Middleware\SetLocaleFromHeader::class,
+        ]);
         $middleware->redirectGuestsTo(function (Request $request): ?string {
             if ($request->is('api/*')) {
                 return null;
@@ -43,7 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return response()->json([
-                'message' => 'Unauthenticated.',
+                'message' => __('messages.unauthenticated'),
                 'errors' => new \stdClass(),
             ], 401);
         });
@@ -54,7 +57,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return response()->json([
-                'message' => 'Too many attempts. Please try again later.',
+                'message' => __('messages.too_many_attempts'),
                 'errors' => new \stdClass(),
             ], 429);
         });

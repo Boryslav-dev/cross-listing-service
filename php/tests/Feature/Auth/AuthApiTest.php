@@ -78,6 +78,22 @@ class AuthApiTest extends TestCase
             ->assertJsonValidationErrors(['email']);
     }
 
+    public function test_locale_header_changes_api_messages(): void
+    {
+        $this->withHeader('X-Locale', 'uk')
+            ->getJson('/api/v1/auth/me')
+            ->assertUnauthorized()
+            ->assertJsonPath('message', 'Неавторизовано.');
+
+        $this->withHeader('X-Locale', 'uk')
+            ->postJson('/api/v1/auth/login', [
+                'email' => 'missing@example.com',
+                'password' => 'wrong-password',
+            ])
+            ->assertStatus(422)
+            ->assertJsonPath('errors.email.0', 'Облікові дані не збігаються з нашими записами.');
+    }
+
     public function test_me_is_protected_and_returns_user_when_authorized(): void
     {
         $this->getJson('/api/v1/auth/me')

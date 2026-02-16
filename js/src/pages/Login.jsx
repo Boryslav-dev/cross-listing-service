@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Divider, Link as MuiLink, Stack, Typography } from '@mui/material'
 import GoogleIcon from '@mui/icons-material/Google'
@@ -13,23 +13,28 @@ import { SubmitButton } from '../components/ui/SubmitButton'
 import { useAuth } from '../auth/useAuth'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
 import { getGoogleLoginUrl } from '../api/auth'
+import { useI18n } from '../i18n/useI18n'
 
-const loginSchema = z.object({
-  email: z.string().email('Введите корректный email'),
-  password: z.string().min(1, 'Введите пароль'),
-})
+function buildLoginSchema(t) {
+  return z.object({
+    email: z.string().email(t('validation.email_invalid')),
+    password: z.string().min(1, t('validation.password_required')),
+  })
+}
 
 export function LoginPage() {
   const { login } = useAuth()
+  const { t } = useI18n()
   const [searchParams] = useSearchParams()
   const resetSuccess = searchParams.get('reset') === 'success'
   const oauthStatus = searchParams.get('oauth')
   const googleLoginUrl = getGoogleLoginUrl()
+  const loginSchema = useMemo(() => buildLoginSchema(t), [t])
   const oauthErrorMessage =
     oauthStatus === 'missing_data'
-      ? 'Google не вернул обязательные данные профиля. Попробуйте снова или используйте email.'
+      ? t('auth.oauth_missing_data')
       : oauthStatus === 'error'
-        ? 'Не удалось выполнить вход через Google. Попробуйте позже.'
+        ? t('auth.oauth_error')
         : ''
 
   const {
@@ -46,7 +51,7 @@ export function LoginPage() {
   })
 
   const [formError, setFormError] = useState(oauthErrorMessage)
-  const [formSuccess, setFormSuccess] = useState(resetSuccess ? 'Пароль изменен. Войдите в аккаунт.' : '')
+  const [formSuccess, setFormSuccess] = useState(resetSuccess ? t('auth.reset_success_login') : '')
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError('')
@@ -56,23 +61,23 @@ export function LoginPage() {
       await login(values)
     } catch (error) {
       applyServerValidationErrors(error, setError)
-      setFormError(buildFormErrorMessage(error))
+      setFormError(buildFormErrorMessage(error, t))
     }
   })
 
   return (
     <AuthCardLayout
-      title="Вход"
-      subtitle="Управляйте публикациями и продажами в одном месте"
+      title={t('auth.login_title')}
+      subtitle={t('auth.subtitle')}
       footer={
         <Stack spacing={1}>
           <MuiLink component={Link} to="/forgot-password" underline="hover">
-            Забыли пароль?
+            {t('links.forgot_password')}
           </MuiLink>
           <Typography variant="body2" color="text.secondary">
-            Нет аккаунта?{' '}
+            {t('links.no_account')}{' '}
             <MuiLink component={Link} to="/register" underline="hover">
-              Зарегистрироваться
+              {t('links.sign_up')}
             </MuiLink>
           </Typography>
         </Stack>
@@ -85,7 +90,7 @@ export function LoginPage() {
         <InputField
           id="email"
           type="email"
-          label="Email"
+          label={t('common.email')}
           autoComplete="email"
           error={errors.email?.message}
           disabled={isSubmitting}
@@ -94,7 +99,7 @@ export function LoginPage() {
 
         <PasswordField
           id="password"
-          label="Пароль"
+          label={t('common.password')}
           autoComplete="current-password"
           error={errors.password?.message}
           disabled={isSubmitting}
@@ -102,10 +107,10 @@ export function LoginPage() {
         />
 
         <SubmitButton type="submit" isLoading={isSubmitting}>
-          Войти
+          {t('buttons.login')}
         </SubmitButton>
 
-        <Divider sx={{ my: 1 }}>или</Divider>
+        <Divider sx={{ my: 1 }}>{t('common.or')}</Divider>
 
         <Button
           variant="outlined"
@@ -114,7 +119,7 @@ export function LoginPage() {
           href={googleLoginUrl}
           startIcon={<GoogleIcon />}
         >
-          Войти через Google
+          {t('buttons.google_login')}
         </Button>
       </Stack>
     </AuthCardLayout>

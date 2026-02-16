@@ -5,7 +5,7 @@ Laravel API + React SPA с cookie-based авторизацией (Sanctum), Goog
 ## Стек
 
 - Backend: Laravel 12, Sanctum, Socialite, PostgreSQL, Redis
-- Frontend: React (Vite), React Router, React Query, Axios, React Hook Form, Zod, MUI
+- Frontend: React (Vite), React Router, React Query, Axios, React Hook Form, Zod, MUI, custom i18n (`en/uk`)
 - Авторизация: session + httpOnly cookies (`withCredentials: true`)
 
 ## Локальные URL
@@ -44,6 +44,7 @@ BACKEND_HOST_PORT=18081 FRONTEND_HOST_PORT=5174 docker compose up --build -d
 - `GOOGLE_CLIENT_ID=...`
 - `GOOGLE_CLIENT_SECRET=...`
 - `GOOGLE_REDIRECT_URI=http://127.0.0.1:18080/api/v1/auth/google/callback`
+- `APP_SUPPORTED_LOCALES=en,uk`
 
 ## Frontend ENV (`js/.env`)
 
@@ -84,12 +85,22 @@ import axios from 'axios'
 const http = axios.create({
   baseURL: 'http://127.0.0.1:18080',
   withCredentials: true,
+  withXSRFToken: true,
   headers: {
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
+    'X-Locale': 'en',
+    'Accept-Language': 'en',
   },
 })
 ```
+
+## Localization
+
+- Backend локаль определяется по заголовку `X-Locale` (приоритет) и fallback на `Accept-Language`.
+- Frontend переключает язык в UI (English / Українська) и автоматически отправляет его в API-запросах.
+- Тексты API и валидации вынесены в `php/lang/en/*` и `php/lang/uk/*`.
+- Тексты React вынесены в `js/src/i18n/translations/en.js` и `js/src/i18n/translations/uk.js`.
 
 ## API v1 Auth Endpoints
 

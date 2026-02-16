@@ -8,9 +8,16 @@ const defaultBackendUrl =
 export const backendUrl = import.meta.env.VITE_BACKEND_URL ?? defaultBackendUrl
 
 let unauthorizedHandler = null
+let requestLocale = 'en'
 
 export function setUnauthorizedHandler(handler) {
   unauthorizedHandler = handler
+}
+
+export function setRequestLocale(locale) {
+  if (typeof locale === 'string' && locale.trim() !== '') {
+    requestLocale = locale.trim().toLowerCase()
+  }
 }
 
 const http = axios.create({
@@ -23,6 +30,16 @@ const http = axios.create({
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
+})
+
+http.interceptors.request.use((config) => {
+  const locale = requestLocale || 'en'
+
+  config.headers = config.headers ?? {}
+  config.headers['X-Locale'] = locale
+  config.headers['Accept-Language'] = locale
+
+  return config
 })
 
 http.interceptors.response.use(

@@ -11,6 +11,7 @@ import {
 } from '../api/auth'
 import { setUnauthorizedHandler } from '../api/http'
 import { AuthContext } from './AuthContext'
+import { useI18n } from '../i18n/useI18n'
 
 const meQueryOptions = {
   queryKey: ['me'],
@@ -26,6 +27,7 @@ const meQueryOptions = {
 export function AuthProvider({ children }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { t } = useI18n()
 
   const meQuery = useQuery(meQueryOptions)
 
@@ -56,10 +58,10 @@ export function AuthProvider({ children }) {
     async (payload) => {
       await loginRequest(payload)
       await refreshMe()
-      toast.success('Вы успешно вошли в систему')
+      toast.success(t('toasts.login_success'))
       navigate('/app', { replace: true })
     },
-    [navigate, refreshMe],
+    [navigate, refreshMe, t],
   )
 
   const register = useCallback(
@@ -67,12 +69,12 @@ export function AuthProvider({ children }) {
       const response = await registerRequest(payload)
 
       await refreshMe()
-      toast.success('Аккаунт создан')
+      toast.success(t('toasts.register_success'))
       navigate('/app', { replace: true })
 
       return response
     },
-    [navigate, refreshMe],
+    [navigate, refreshMe, t],
   )
 
   const logout = useCallback(async () => {
@@ -80,15 +82,15 @@ export function AuthProvider({ children }) {
       await logoutRequest()
     } finally {
       queryClient.setQueryData(['me'], null)
-      toast.success('Вы вышли из аккаунта')
+      toast.success(t('toasts.logout_success'))
       navigate('/login', { replace: true })
     }
-  }, [navigate, queryClient])
+  }, [navigate, queryClient, t])
 
   const resendVerificationEmail = useCallback(async () => {
     await resendVerificationEmailRequest()
-    toast.success('Письмо отправлено повторно')
-  }, [])
+    toast.success(t('toasts.verification_resent'))
+  }, [t])
 
   const value = useMemo(
     () => ({
