@@ -3,7 +3,13 @@
 namespace App\Providers;
 
 use App\Enums\UserRole;
+use App\Models\AuditLog;
 use App\Models\User;
+use App\Models\Workspace;
+use App\Models\WorkspaceMembership;
+use App\Policies\AuditLogPolicy;
+use App\Policies\WorkspaceMemberPolicy;
+use App\Policies\WorkspacePolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -27,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Workspace::class, WorkspacePolicy::class);
+        Gate::policy(WorkspaceMembership::class, WorkspaceMemberPolicy::class);
+        Gate::policy(AuditLog::class, AuditLogPolicy::class);
+
         RateLimiter::for('auth-login', function (Request $request): Limit {
             $email = Str::lower((string) $request->input('email'));
 
@@ -41,13 +51,6 @@ class AppServiceProvider extends ServiceProvider
             $key = $request->user()?->getAuthIdentifier() ?: $request->ip();
 
             return Limit::perMinute(6)->by((string) $key);
-        });
-
-        Gate::define('role:admin-or-owner', function (User $user): bool {
-            return in_array($user->role?->value ?? $user->role, [
-                UserRole::OWNER->value,
-                UserRole::ADMIN->value,
-            ], true);
         });
 
         ResetPassword::createUrlUsing(function (User $user, string $token): string {

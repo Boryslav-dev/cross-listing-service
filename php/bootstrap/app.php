@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+        $middleware->alias([
+            'workspace.member' => \App\Http\Middleware\EnsureWorkspaceMember::class,
+        ]);
         $middleware->api(prepend: [
             \App\Http\Middleware\SetLocaleFromHeader::class,
         ]);
@@ -60,5 +64,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => __('messages.too_many_attempts'),
                 'errors' => new \stdClass(),
             ], 429);
+        });
+
+        $exceptions->render(function (AuthorizationException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'message' => __('messages.forbidden'),
+                'errors' => new \stdClass(),
+            ], 403);
         });
     })->create();

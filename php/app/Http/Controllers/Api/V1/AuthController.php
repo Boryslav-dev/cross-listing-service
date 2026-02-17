@@ -31,8 +31,7 @@ class AuthController extends Controller
         $user = User::query()->create([
             'name' => $payload['name'] ?? null,
             'email' => $payload['email'],
-            'password' => $payload['password'],
-            'role' => UserRole::MEMBER,
+            'password' => $payload['password']
         ]);
 
         Auth::login($user);
@@ -52,6 +51,9 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
@@ -118,8 +120,7 @@ class AuthController extends Controller
                 'email' => $email,
                 'google_id' => $googleId,
                 'email_verified_at' => now(),
-                'password' => Str::password(32),
-                'role' => UserRole::MEMBER,
+                'password' => Str::password()
             ]);
         } else {
             $payload = [];
@@ -224,6 +225,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $payload = $request->validated();
@@ -267,7 +271,7 @@ class AuthController extends Controller
 
     private function invalidateSession(Request $request): void
     {
-        if (! $request->hasSession()) {
+        if (!$request->hasSession()) {
             return;
         }
 

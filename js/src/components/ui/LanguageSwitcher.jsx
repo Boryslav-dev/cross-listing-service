@@ -1,28 +1,25 @@
-import { MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useI18n } from '../../i18n/useI18n'
+import { Select } from './Select'
+import { cn } from '../../utils/cn'
 
-export function LanguageSwitcher({ compact = false }) {
+export function LanguageSwitcher({ compact = false, className }) {
   const { locale, setLocale, supportedLocales, t } = useI18n()
 
   return (
-    <Stack direction={compact ? 'row' : 'column'} spacing={0.5}>
-      {!compact ? (
-        <Typography variant="caption" color="text.secondary">
-          {t('locale.label')}
-        </Typography>
-      ) : null}
+    <div className={cn(compact ? 'flex items-center gap-1' : 'flex flex-col gap-1', className)}>
+      {!compact && (
+        <span className="text-xs text-text-secondary">{t('locale.label')}</span>
+      )}
       <Select
-        size="small"
+        size="sm"
         value={locale}
-        onChange={(event) => setLocale(event.target.value)}
-        sx={{ minWidth: compact ? 130 : 150 }}
-      >
-        {supportedLocales.map((value) => (
-          <MenuItem key={value} value={value}>
-            {t(`locale.${value}`)}
-          </MenuItem>
-        ))}
-      </Select>
-    </Stack>
+        onChange={(val) => setLocale(val)}
+        options={supportedLocales.map((value) => ({
+          value,
+          label: t(`locale.${value}`),
+        }))}
+        className={compact ? 'min-w-[130px]' : 'min-w-[150px]'}
+      />
+    </div>
   )
 }

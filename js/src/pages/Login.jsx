@@ -1,15 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { Button, Divider, Link as MuiLink, Stack, Typography } from '@mui/material'
-import GoogleIcon from '@mui/icons-material/Google'
+import { useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AuthCardLayout } from '../components/layout/AuthCardLayout'
-import { Banner } from '../components/ui/Banner'
-import { InputField } from '../components/ui/InputField'
-import { PasswordField } from '../components/ui/PasswordField'
-import { SubmitButton } from '../components/ui/SubmitButton'
+import { Alert, Input, PasswordInput, Button, Divider, Link } from '../components/ui'
+import { GoogleIcon } from '../components/icons'
 import { useAuth } from '../auth/useAuth'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
 import { getGoogleLoginUrl } from '../api/auth'
@@ -70,24 +66,20 @@ export function LoginPage() {
       title={t('auth.login_title')}
       subtitle={t('auth.subtitle')}
       footer={
-        <Stack spacing={1}>
-          <MuiLink component={Link} to="/forgot-password" underline="hover">
-            {t('links.forgot_password')}
-          </MuiLink>
-          <Typography variant="body2" color="text.secondary">
+        <div className="flex flex-col gap-2">
+          <Link to="/forgot-password">{t('links.forgot_password')}</Link>
+          <p className="text-sm text-text-secondary">
             {t('links.no_account')}{' '}
-            <MuiLink component={Link} to="/register" underline="hover">
-              {t('links.sign_up')}
-            </MuiLink>
-          </Typography>
-        </Stack>
+            <Link to="/register">{t('links.sign_up')}</Link>
+          </p>
+        </div>
       }
     >
-      <Banner variant="success">{formSuccess}</Banner>
-      <Banner variant="error">{formError}</Banner>
+      <Alert variant="success">{formSuccess}</Alert>
+      <Alert variant="error">{formError}</Alert>
 
-      <Stack spacing={0.75} component="form" onSubmit={onSubmit}>
-        <InputField
+      <form onSubmit={onSubmit} className="flex flex-col gap-1.5">
+        <Input
           id="email"
           type="email"
           label={t('common.email')}
@@ -97,7 +89,7 @@ export function LoginPage() {
           {...register('email')}
         />
 
-        <PasswordField
+        <PasswordInput
           id="password"
           label={t('common.password')}
           autoComplete="current-password"
@@ -106,22 +98,22 @@ export function LoginPage() {
           {...register('password')}
         />
 
-        <SubmitButton type="submit" isLoading={isSubmitting}>
+        <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
           {t('buttons.login')}
-        </SubmitButton>
+        </Button>
 
-        <Divider sx={{ my: 1 }}>{t('common.or')}</Divider>
+        <Divider>{t('common.or')}</Divider>
 
         <Button
-          variant="outlined"
+          variant="outline"
+          size="lg"
           fullWidth
-          size="large"
           href={googleLoginUrl}
           startIcon={<GoogleIcon />}
         >
           {t('buttons.google_login')}
         </Button>
-      </Stack>
+      </form>
     </AuthCardLayout>
   )
 }

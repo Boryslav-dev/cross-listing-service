@@ -1,15 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Link as MuiLink, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import toast from 'react-hot-toast'
 import { forgotPassword } from '../api/auth'
 import { AuthCardLayout } from '../components/layout/AuthCardLayout'
-import { Banner } from '../components/ui/Banner'
-import { InputField } from '../components/ui/InputField'
-import { SubmitButton } from '../components/ui/SubmitButton'
+import { Alert, Input, Button, Link } from '../components/ui'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
 import { useI18n } from '../i18n/useI18n'
 
@@ -56,19 +52,17 @@ export function ForgotPasswordPage() {
       title={t('auth.forgot_title')}
       subtitle={t('auth.forgot_subtitle')}
       footer={
-        <Typography variant="body2" color="text.secondary">
+        <p className="text-sm text-text-secondary">
           {t('links.remembered_password')}{' '}
-          <MuiLink component={Link} to="/login" underline="hover">
-            {t('links.sign_in')}
-          </MuiLink>
-        </Typography>
+          <Link to="/login">{t('links.sign_in')}</Link>
+        </p>
       }
     >
-      <Banner variant="success">{formSuccess}</Banner>
-      <Banner variant="error">{formError}</Banner>
+      <Alert variant="success">{formSuccess}</Alert>
+      <Alert variant="error">{formError}</Alert>
 
-      <Stack spacing={0.75} component="form" onSubmit={onSubmit}>
-        <InputField
+      <form onSubmit={onSubmit} className="flex flex-col gap-1.5">
+        <Input
           id="email"
           type="email"
           label={t('common.email')}
@@ -78,10 +72,10 @@ export function ForgotPasswordPage() {
           {...register('email')}
         />
 
-        <SubmitButton type="submit" isLoading={isSubmitting}>
+        <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
           {t('buttons.send_link')}
-        </SubmitButton>
-      </Stack>
+        </Button>
+      </form>
     </AuthCardLayout>
   )
 }

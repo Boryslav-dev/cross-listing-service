@@ -115,6 +115,47 @@ const http = axios.create({
 - `POST /api/v1/auth/email/verification-notification` (auth:sanctum)
 - `GET /api/v1/auth/email/verify/{id}/{hash}` (signed URL, редирект на frontend)
 
+## EPIC 1: Workspaces + Users + Roles + Security
+
+### Что реализовано
+
+- Workspaces с membership-ролями: `owner | admin | manager | content | viewer`
+- RBAC для workspace-эндпоинтов (middleware + policies)
+- Audit log для workspace действий
+- Connected accounts + отдельное хранение credentials в `connected_account_credentials`
+- Шифрование credentials через Laravel cast `encrypted:array`
+- React admin страницы:
+  - `/app/workspaces`
+  - `/app/workspaces/:id/members`
+  - `/app/workspaces/:id/audit`
+  - `/app/workspaces/:id/integrations`
+
+### API v1 Workspace Endpoints
+
+- `GET /api/v1/workspaces`
+- `POST /api/v1/workspaces`
+- `GET /api/v1/workspaces/{workspace}`
+- `PATCH /api/v1/workspaces/{workspace}`
+- `DELETE /api/v1/workspaces/{workspace}`
+- `GET /api/v1/workspaces/{workspace}/members`
+- `POST /api/v1/workspaces/{workspace}/members/invite`
+- `PATCH /api/v1/workspaces/{workspace}/members/{memberId}`
+- `DELETE /api/v1/workspaces/{workspace}/members/{memberId}`
+- `GET /api/v1/workspaces/{workspace}/audit-logs`
+- `GET /api/v1/workspaces/{workspace}/connected-accounts`
+- `POST /api/v1/workspaces/{workspace}/connected-accounts`
+
+### Быстрая локальная проверка EPIC 1
+
+1. Создайте workspace в UI (`/app/workspaces`) и убедитесь, что текущий пользователь стал `owner`.
+2. Откройте участников (`/app/workspaces/:id/members`) и проверьте:
+   - `owner/admin` могут приглашать/менять роли/удалять,
+   - `viewer` видит только чтение.
+3. Откройте аудит (`/app/workspaces/:id/audit`) и убедитесь, что события появляются после create/invite/role change/remove.
+4. В integrations (`/app/workspaces/:id/integrations`) добавьте manual integration и проверьте:
+   - API не возвращает credentials,
+   - в таблице `connected_account_credentials` значение хранится не в открытом виде.
+
 ## Лимиты
 
 - Login: 5 попыток / минуту / `ip+email`

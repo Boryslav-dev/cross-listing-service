@@ -13,12 +13,18 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('event');
+            $table->foreignId('workspace_id')->nullable();
+            $table->foreignId('actor_user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('action');
+            $table->string('target_type')->nullable();
+            $table->string('target_id')->nullable();
+            $table->json('meta')->nullable();
             $table->string('ip', 45)->nullable();
             $table->text('user_agent')->nullable();
-            $table->json('meta')->nullable();
             $table->timestamp('created_at')->useCurrent();
+
+            $table->index(['workspace_id', 'created_at']);
+            $table->index(['workspace_id', 'action']);
         });
     }
 

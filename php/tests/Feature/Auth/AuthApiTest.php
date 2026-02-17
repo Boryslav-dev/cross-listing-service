@@ -31,7 +31,6 @@ class AuthApiTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonPath('user.email', 'jane@example.com')
-            ->assertJsonPath('user.role', 'member')
             ->assertJsonPath('requires_email_verification', false);
 
         $user = User::query()->where('email', 'jane@example.com')->firstOrFail();

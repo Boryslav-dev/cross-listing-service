@@ -1,16 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Link as MuiLink, Stack, Typography } from '@mui/material'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import toast from 'react-hot-toast'
 import { resetPassword } from '../api/auth'
 import { AuthCardLayout } from '../components/layout/AuthCardLayout'
-import { Banner } from '../components/ui/Banner'
-import { InputField } from '../components/ui/InputField'
-import { PasswordField } from '../components/ui/PasswordField'
-import { SubmitButton } from '../components/ui/SubmitButton'
+import { Alert, Input, PasswordInput, Button, Link } from '../components/ui'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
 import { useI18n } from '../i18n/useI18n'
 
@@ -83,19 +79,17 @@ export function ResetPasswordPage() {
       title={t('auth.reset_title')}
       subtitle={t('auth.reset_subtitle')}
       footer={
-        <Typography variant="body2" color="text.secondary">
+        <p className="text-sm text-text-secondary">
           {t('links.back_to_login_prefix')}{' '}
-          <MuiLink component={Link} to="/login" underline="hover">
-            {t('links.login_page')}
-          </MuiLink>
-        </Typography>
+          <Link to="/login">{t('links.login_page')}</Link>
+        </p>
       }
     >
-      <Banner variant="success">{formSuccess}</Banner>
-      <Banner variant="error">{formError || (!token ? t('auth.reset_invalid_link') : '')}</Banner>
+      <Alert variant="success">{formSuccess}</Alert>
+      <Alert variant="error">{formError || (!token ? t('auth.reset_invalid_link') : '')}</Alert>
 
-      <Stack spacing={0.75} component="form" onSubmit={onSubmit}>
-        <InputField
+      <form onSubmit={onSubmit} className="flex flex-col gap-1.5">
+        <Input
           id="email"
           type="email"
           label={t('common.email')}
@@ -107,7 +101,7 @@ export function ResetPasswordPage() {
 
         <input type="hidden" {...register('token')} />
 
-        <PasswordField
+        <PasswordInput
           id="password"
           label={t('common.new_password')}
           autoComplete="new-password"
@@ -116,7 +110,7 @@ export function ResetPasswordPage() {
           {...register('password')}
         />
 
-        <PasswordField
+        <PasswordInput
           id="password_confirmation"
           label={t('common.password_confirmation')}
           autoComplete="new-password"
@@ -125,10 +119,10 @@ export function ResetPasswordPage() {
           {...register('password_confirmation')}
         />
 
-        <SubmitButton type="submit" isLoading={isSubmitting} disabled={!token}>
+        <Button type="submit" size="lg" fullWidth isLoading={isSubmitting} disabled={!token}>
           {t('buttons.save_password')}
-        </SubmitButton>
-      </Stack>
+        </Button>
+      </form>
     </AuthCardLayout>
   )
 }

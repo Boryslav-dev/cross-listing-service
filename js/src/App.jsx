@@ -5,8 +5,12 @@ import { LoginPage } from './pages/Login'
 import { RegisterPage } from './pages/Register'
 import { ForgotPasswordPage } from './pages/ForgotPassword'
 import { ResetPasswordPage } from './pages/ResetPassword'
-import { DashboardPage } from './pages/Dashboard'
 import { EmailVerifiedPage } from './pages/EmailVerified'
+import { AppLayout } from './components/layout/AppLayout'
+import { WorkspaceProvider } from './workspaces/WorkspaceProvider'
+import { WorkspaceListPage } from './pages/workspaces/WorkspaceListPage'
+import { WorkspaceMembersPage } from './pages/workspaces/WorkspaceMembersPage'
+import { WorkspaceAuditPage } from './pages/workspaces/WorkspaceAuditPage'
 
 function App() {
   return (
@@ -53,10 +57,18 @@ function App() {
         path="/app"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <WorkspaceProvider>
+              <AppLayout />
+            </WorkspaceProvider>
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<Navigate to="/app/workspaces" replace />} />
+        <Route path="workspaces" element={<WorkspaceListPage />} />
+        <Route path="workspaces/:id" element={<Navigate to="members" replace />} />
+        <Route path="workspaces/:id/members" element={<WorkspaceMembersPage />} />
+        <Route path="workspaces/:id/audit" element={<WorkspaceAuditPage />} />
+      </Route>
 
       <Route path="/" element={<Navigate to="/app" replace />} />
       <Route path="*" element={<Navigate to="/app" replace />} />

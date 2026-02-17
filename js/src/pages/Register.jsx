@@ -1,15 +1,10 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Button, Divider, Link as MuiLink, Stack, Typography } from '@mui/material'
-import GoogleIcon from '@mui/icons-material/Google'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AuthCardLayout } from '../components/layout/AuthCardLayout'
-import { Banner } from '../components/ui/Banner'
-import { InputField } from '../components/ui/InputField'
-import { PasswordField } from '../components/ui/PasswordField'
-import { SubmitButton } from '../components/ui/SubmitButton'
+import { Alert, Input, PasswordInput, Button, Divider, Link } from '../components/ui'
+import { GoogleIcon } from '../components/icons'
 import { useAuth } from '../auth/useAuth'
 import { applyServerValidationErrors, buildFormErrorMessage } from '../utils/apiErrors'
 import { getGoogleLoginUrl } from '../api/auth'
@@ -67,18 +62,16 @@ export function RegisterPage() {
       title={t('auth.register_title')}
       subtitle={t('auth.subtitle')}
       footer={
-        <Typography variant="body2" color="text.secondary">
+        <p className="text-sm text-text-secondary">
           {t('links.already_account')}{' '}
-          <MuiLink component={Link} to="/login" underline="hover">
-            {t('links.sign_in')}
-          </MuiLink>
-        </Typography>
+          <Link to="/login">{t('links.sign_in')}</Link>
+        </p>
       }
     >
-      <Banner variant="error">{formError}</Banner>
+      <Alert variant="error">{formError}</Alert>
 
-      <Stack spacing={0.75} component="form" onSubmit={onSubmit}>
-        <InputField
+      <form onSubmit={onSubmit} className="flex flex-col gap-1.5">
+        <Input
           id="name"
           type="text"
           label={t('common.name')}
@@ -88,7 +81,7 @@ export function RegisterPage() {
           {...register('name')}
         />
 
-        <InputField
+        <Input
           id="email"
           type="email"
           label={t('common.email')}
@@ -98,7 +91,7 @@ export function RegisterPage() {
           {...register('email')}
         />
 
-        <PasswordField
+        <PasswordInput
           id="password"
           label={t('common.password')}
           autoComplete="new-password"
@@ -107,7 +100,7 @@ export function RegisterPage() {
           {...register('password')}
         />
 
-        <PasswordField
+        <PasswordInput
           id="password_confirmation"
           label={t('common.password_confirmation')}
           autoComplete="new-password"
@@ -116,22 +109,22 @@ export function RegisterPage() {
           {...register('password_confirmation')}
         />
 
-        <SubmitButton type="submit" isLoading={isSubmitting}>
+        <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
           {t('buttons.register')}
-        </SubmitButton>
+        </Button>
 
-        <Divider sx={{ my: 1 }}>{t('common.or')}</Divider>
+        <Divider>{t('common.or')}</Divider>
 
         <Button
-          variant="outlined"
+          variant="outline"
+          size="lg"
           fullWidth
-          size="large"
           href={googleLoginUrl}
           startIcon={<GoogleIcon />}
         >
           {t('buttons.google_register')}
         </Button>
-      </Stack>
+      </form>
     </AuthCardLayout>
   )
 }

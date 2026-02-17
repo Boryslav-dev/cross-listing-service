@@ -30,7 +30,6 @@ class UserFactory extends Factory
             'google_id' => null,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => UserRole::MEMBER,
             'last_login_at' => null,
             'remember_token' => Str::random(10),
         ];

@@ -54,10 +54,6 @@ class SetLocaleFromHeader
     {
         $clean = trim(Str::lower($rawLocale));
 
-        if ($clean === '') {
-            return null;
-        }
-
         $baseLocale = explode('-', str_replace('_', '-', $clean), 2)[0];
 
         return $baseLocale !== '' ? $baseLocale : null;

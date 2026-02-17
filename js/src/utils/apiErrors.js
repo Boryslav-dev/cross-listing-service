@@ -28,6 +28,10 @@ export function buildFormErrorMessage(error, t) {
     return t('errors.invalid_credentials')
   }
 
+  if (status === 403) {
+    return t('errors.forbidden')
+  }
+
   if (status === 422) {
     return error?.response?.data?.message ?? t('errors.invalid_data')
   }

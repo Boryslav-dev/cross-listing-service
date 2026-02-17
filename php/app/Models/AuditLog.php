@@ -2,19 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AuditLog extends Model
 {
-    public const UPDATED_AT = null;
+    public const null UPDATED_AT = null;
 
     protected $fillable = [
-        'user_id',
-        'event',
+        'workspace_id',
+        'actor_user_id',
+        'action',
+        'target_type',
+        'target_id',
+        'meta',
         'ip',
         'user_agent',
-        'meta',
     ];
 
     protected function casts(): array
@@ -24,8 +27,13 @@ class AuditLog extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function workspace(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Workspace::class);
+    }
+
+    public function actor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_user_id');
     }
 }
