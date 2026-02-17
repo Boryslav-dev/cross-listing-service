@@ -57,9 +57,14 @@ export function AuthProvider({ children }) {
   const login = useCallback(
     async (payload) => {
       await loginRequest(payload)
-      await refreshMe()
-      toast.success(t('toasts.login_success'))
-      navigate('/app', { replace: true })
+      const user = await refreshMe()
+
+      if (user) {
+        toast.success(t('toasts.login_success'))
+        navigate('/app/workspaces', { replace: true })
+      } else {
+        throw new Error('Failed to fetch user data after login')
+      }
     },
     [navigate, refreshMe, t],
   )

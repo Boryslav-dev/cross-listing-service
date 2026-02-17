@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { listWorkspaceAuditLogs } from '../../api/workspaces'
 import { useWorkspace } from '../../workspaces/useWorkspace'
@@ -11,10 +10,9 @@ import {
 import { ExpandMoreIcon, ExpandLessIcon, ResetIcon } from '../../components/icons'
 
 export function WorkspaceAuditPage() {
-  const { id } = useParams()
-  const workspaceId = Number(id)
   const { t } = useI18n()
-  const { setCurrentWorkspaceId, currentWorkspace, hasPermission } = useWorkspace()
+  const { currentWorkspace, hasPermission } = useWorkspace()
+  const workspaceId = currentWorkspace?.id
 
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(25)
@@ -26,12 +24,6 @@ export function WorkspaceAuditPage() {
     date_to: '',
   })
   const [expandedRows, setExpandedRows] = useState(() => new Set())
-
-  useEffect(() => {
-    if (workspaceId) {
-      setCurrentWorkspaceId(workspaceId)
-    }
-  }, [setCurrentWorkspaceId, workspaceId])
 
   const canViewAudit = hasPermission('audit.view')
 

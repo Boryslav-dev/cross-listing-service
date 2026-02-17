@@ -4,40 +4,46 @@ import { cn } from '../../utils/cn'
 import { useAuth } from '../../auth/useAuth'
 import { useWorkspace } from '../../workspaces/useWorkspace'
 import { useI18n } from '../../i18n/useI18n'
-import { Select, IconButton, LanguageSwitcher } from '../ui'
+import { IconButton, LanguageSwitcher } from '../ui'
 import {
   MenuIcon,
-  WorkspacesIcon,
   GroupIcon,
   HistoryIcon,
+  SettingsIcon,
   LogoutIcon,
   UserCircleIcon,
+  ExpandMoreIcon,
 } from '../icons'
+import { ROLE_OWNER } from '../../constants/roles'
 
-function buildNavItems(workspaceId, t) {
-  const workspacePath = workspaceId ? `/app/workspaces/${workspaceId}` : '/app/workspaces'
+function buildNavItems(t, currentWorkspace) {
+  const isOwner = currentWorkspace?.current_role === ROLE_OWNER
 
-  return [
-    {
-      key: 'workspaces',
-      label: t('workspace.menu_workspaces'),
-      icon: <WorkspacesIcon size={18} />,
-      to: '/app/workspaces',
-      exact: true,
-    },
+  const items = [
     {
       key: 'members',
       label: t('workspace.menu_members'),
       icon: <GroupIcon size={18} />,
-      to: `${workspacePath}/members`,
+      to: '/app/members',
     },
     {
       key: 'audit',
       label: t('workspace.menu_audit'),
       icon: <HistoryIcon size={18} />,
-      to: `${workspacePath}/audit`,
+      to: '/app/audit',
     },
   ]
+
+  if (isOwner) {
+    items.push({
+      key: 'settings',
+      label: t('workspace.menu_settings'),
+      icon: <SettingsIcon size={18} />,
+      to: '/app/settings',
+    })
+  }
+
+  return items
 }
 
 function isNavItemActive(pathname, item) {
@@ -52,50 +58,35 @@ export function AppLayout() {
   const { t } = useI18n()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  const { workspaces, currentWorkspaceId, setCurrentWorkspaceId } = useWorkspace()
+  const { currentWorkspace, currentWorkspaceId } = useWorkspace()
 
-  const navItems = useMemo(
-    () => buildNavItems(currentWorkspaceId, t),
-    [currentWorkspaceId, t],
-  )
+  const navItems = useMemo(() => buildNavItems(t, currentWorkspace), [t, currentWorkspace])
 
-  const handleWorkspaceChange = (val) => {
-    const workspaceId = Number(val)
-    setCurrentWorkspaceId(workspaceId)
-
-    const isWorkspaceScopedPage =
-      location.pathname.includes('/members') ||
-      location.pathname.includes('/audit')
-
-    if (isWorkspaceScopedPage) {
-      navigate(`/app/workspaces/${workspaceId}/members`)
-    }
+  const handleWorkspaceClick = () => {
+    navigate('/app/workspaces')
+    setMobileOpen(false)
   }
 
   const sidebarContent = (
     <div className="flex h-full flex-col">
       <div className="p-5">
-        <span className="text-xs font-extrabold uppercase tracking-[0.14em] text-primary">
-          {t('app.name')}
-        </span>
-        <p className="mt-1 text-sm text-text-secondary">{t('workspace.sidebar_subtitle')}</p>
-      </div>
-
-      <div className="px-5 pb-4">
-        <span className="mb-1.5 block text-xs text-text-secondary">
+        <span className="mb-2 block text-xs text-text-secondary">
           {t('workspace.switcher_label')}
         </span>
-        <Select
-          fullWidth
-          size="sm"
-          value={currentWorkspaceId ?? ''}
-          onChange={handleWorkspaceChange}
-          options={
-            workspaces.length === 0
-              ? [{ value: '', label: t('workspace.no_workspaces_short'), disabled: true }]
-              : workspaces.map((ws) => ({ value: ws.id, label: ws.name }))
-          }
-        />
+        <button
+          onClick={handleWorkspaceClick}
+          className="flex w-full items-center justify-between rounded-lg border border-border bg-surface px-3 py-2.5 text-left transition-all hover:border-primary hover:bg-primary/5"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-text-primary">
+              {currentWorkspace?.name || t('workspace.no_workspaces_short')}
+            </p>
+            {currentWorkspace?.slug && (
+              <p className="truncate text-xs text-text-secondary">@{currentWorkspace.slug}</p>
+            )}
+          </div>
+          <ExpandMoreIcon size={18} className="ml-2 shrink-0 text-text-secondary" />
+        </button>
       </div>
 
       <hr className="border-divider/60" />
@@ -103,7 +94,7 @@ export function AppLayout() {
       <nav className="flex-1 px-3 py-3">
         {navItems.map((item) => {
           const active = isNavItemActive(location.pathname, item)
-          const disabled = !currentWorkspaceId && item.key !== 'workspaces'
+          const disabled = !currentWorkspaceId
 
           return (
             <NavLink

@@ -24,6 +24,12 @@ export async function updateWorkspace(workspaceId, payload) {
   return data
 }
 
+export async function deleteWorkspace(workspaceId) {
+  const { data } = await http.delete(`/api/v1/workspaces/${workspaceId}`)
+
+  return data
+}
+
 export async function listWorkspaceMembers(workspaceId, params = {}) {
   const { data } = await http.get(`/api/v1/workspaces/${workspaceId}/members`, { params })
 

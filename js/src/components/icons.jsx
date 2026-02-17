@@ -22,6 +22,8 @@ export {
   Settings as SettingsIcon,
   Trash2 as TrashIcon,
   RotateCcw as ResetIcon,
+  LayoutGrid as GridIcon,
+  List as ListIcon,
 } from 'lucide-react'
 
 export function GoogleIcon({ className, size = 18 }) {

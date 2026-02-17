@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import {
@@ -16,12 +15,17 @@ import {
   Table, TableHead, TableBody, TableRow, TableCell, TableHeaderCell,
 } from '../../components/ui'
 import { PersonAddIcon, TrashIcon } from '../../components/icons'
-
-const roleOptions = ['owner', 'admin', 'manager', 'content', 'viewer']
+import {
+  ROLE_OWNER,
+  ROLE_ADMIN,
+  ROLE_MANAGER,
+  ROLE_CONTENT,
+  ROLE_VIEWER,
+  getInviteRoles,
+  getUpdateRoles,
+} from '../../constants/roles'
 
 export function WorkspaceMembersPage() {
-  const { id } = useParams()
-  const workspaceId = Number(id)
   const queryClient = useQueryClient()
   const { t } = useI18n()
 
@@ -29,18 +33,13 @@ export function WorkspaceMembersPage() {
   const [rowsPerPage, setRowsPerPage] = useState(20)
   const [openInviteDialog, setOpenInviteDialog] = useState(false)
   const [inviteEmail, setInviteEmail] = useState('')
-  const [inviteRole, setInviteRole] = useState('viewer')
+  const [inviteRole, setInviteRole] = useState(ROLE_VIEWER)
   const [inviteError, setInviteError] = useState('')
   const [forbiddenError, setForbiddenError] = useState('')
   const [confirmDialog, setConfirmDialog] = useState({ open: false, title: '', message: '', onConfirm: null })
 
-  const { currentWorkspace, setCurrentWorkspaceId, hasPermission } = useWorkspace()
-
-  useEffect(() => {
-    if (workspaceId) {
-      setCurrentWorkspaceId(workspaceId)
-    }
-  }, [setCurrentWorkspaceId, workspaceId])
+  const { currentWorkspace, hasPermission } = useWorkspace()
+  const workspaceId = currentWorkspace?.id
 
   const canInviteMembers = useMemo(
     () => hasPermission('workspace.manage_members') || hasPermission('workspace.invite_members'),
@@ -58,21 +57,16 @@ export function WorkspaceMembersPage() {
   )
 
   const inviteRoleOptions = useMemo(() => {
-    const actorRole = currentWorkspace?.current_role
-    if (actorRole === 'manager') return ['content', 'viewer']
-    if (actorRole === 'admin') return ['admin', 'manager', 'content', 'viewer']
-    return roleOptions
+    return getInviteRoles(currentWorkspace?.current_role)
   }, [currentWorkspace?.current_role])
 
   const updateRoleOptions = useMemo(() => {
-    const actorRole = currentWorkspace?.current_role
-    if (actorRole === 'admin') return ['admin', 'manager', 'content', 'viewer']
-    return roleOptions
+    return getUpdateRoles(currentWorkspace?.current_role)
   }, [currentWorkspace?.current_role])
 
   const effectiveInviteRole = inviteRoleOptions.includes(inviteRole)
     ? inviteRole
-    : (inviteRoleOptions[0] ?? 'viewer')
+    : (inviteRoleOptions[0] ?? ROLE_VIEWER)
 
   const membersQuery = useQuery({
     queryKey: ['workspace-members', workspaceId, page, rowsPerPage],
@@ -92,7 +86,7 @@ export function WorkspaceMembersPage() {
       toast.success(t('toasts.member_invited'))
       setOpenInviteDialog(false)
       setInviteEmail('')
-      setInviteRole('viewer')
+      setInviteRole(ROLE_VIEWER)
       setInviteError('')
     },
     onError: (error) => {
@@ -138,11 +132,11 @@ export function WorkspaceMembersPage() {
 
   const roleLabelMap = useMemo(
     () => ({
-      owner: t('workspace.roles.owner'),
-      admin: t('workspace.roles.admin'),
-      manager: t('workspace.roles.manager'),
-      content: t('workspace.roles.content'),
-      viewer: t('workspace.roles.viewer'),
+      [ROLE_OWNER]: t('workspace.roles.owner'),
+      [ROLE_ADMIN]: t('workspace.roles.admin'),
+      [ROLE_MANAGER]: t('workspace.roles.manager'),
+      [ROLE_CONTENT]: t('workspace.roles.content'),
+      [ROLE_VIEWER]: t('workspace.roles.viewer'),
     }),
     [t],
   )
@@ -206,7 +200,7 @@ export function WorkspaceMembersPage() {
               const memberName = member.user?.name || t('workspace.no_name')
               const memberEmail = member.user?.email || member.invited_email || '-'
               const isOwnerProtectedForAdmin =
-                currentWorkspace?.current_role === 'admin' && member.role === 'owner'
+                currentWorkspace?.current_role === ROLE_ADMIN && member.role === ROLE_OWNER
               const canEditThisMemberRole = canChangeRoles && !isOwnerProtectedForAdmin
               const canRemoveThisMember = canRemoveMembers && !isOwnerProtectedForAdmin
 
@@ -233,10 +227,10 @@ export function WorkspaceMembersPage() {
                         }))}
                       />
                     ) : (
-                      roleLabelMap[member.role] ?? member.role
+                      member.role_label || roleLabelMap[member.role] || member.role
                     )}
                   </TableCell>
-                  <TableCell>{member.status}</TableCell>
+                  <TableCell>{member.status_label || member.status}</TableCell>
                   <TableCell align="right">
                     {canRemoveThisMember && (
                       <IconButton

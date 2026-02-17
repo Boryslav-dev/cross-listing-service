@@ -1,6 +1,6 @@
 import { cn } from '../../utils/cn'
 
-export function Card({ children, padding = true, className }) {
+export function Card({ children, padding = true, className, ...props }) {
   return (
     <div
       className={cn(
@@ -8,6 +8,7 @@ export function Card({ children, padding = true, className }) {
         padding && 'p-5',
         className,
       )}
+      {...props}
     >
       {children}
     </div>

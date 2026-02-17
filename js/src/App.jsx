@@ -11,6 +11,7 @@ import { WorkspaceProvider } from './workspaces/WorkspaceProvider'
 import { WorkspaceListPage } from './pages/workspaces/WorkspaceListPage'
 import { WorkspaceMembersPage } from './pages/workspaces/WorkspaceMembersPage'
 import { WorkspaceAuditPage } from './pages/workspaces/WorkspaceAuditPage'
+import { WorkspaceSettingsPage } from './pages/workspaces/WorkspaceSettingsPage'
 
 function App() {
   return (
@@ -63,11 +64,11 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/app/workspaces" replace />} />
+        <Route index element={<Navigate to="workspaces" replace />} />
         <Route path="workspaces" element={<WorkspaceListPage />} />
-        <Route path="workspaces/:id" element={<Navigate to="members" replace />} />
-        <Route path="workspaces/:id/members" element={<WorkspaceMembersPage />} />
-        <Route path="workspaces/:id/audit" element={<WorkspaceAuditPage />} />
+        <Route path="members" element={<WorkspaceMembersPage />} />
+        <Route path="audit" element={<WorkspaceAuditPage />} />
+        <Route path="settings" element={<WorkspaceSettingsPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/app" replace />} />

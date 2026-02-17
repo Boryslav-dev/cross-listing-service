@@ -6,7 +6,7 @@ use App\Models\WorkspaceMembership;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin WorkspaceMembership */
+/** @mixin Wor  kspaceMembership */
 class WorkspaceMemberResource extends JsonResource
 {
     /**
@@ -30,7 +30,9 @@ class WorkspaceMemberResource extends JsonResource
             }),
             'invited_email' => $this->invited_email,
             'role' => $this->role?->value ?? $this->role,
+            'role_label' => __('roles.' . ($this->role?->value ?? $this->role)),
             'status' => $this->status?->value ?? $this->status,
+            'status_label' => __('statuses.' . ($this->status?->value ?? $this->status)),
             'joined_at' => $this->joined_at,
             'invited_by' => $this->whenLoaded('invitedBy', function (): ?array {
                 if (! $this->invitedBy) {

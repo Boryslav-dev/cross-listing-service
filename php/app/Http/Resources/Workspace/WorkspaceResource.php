@@ -22,6 +22,7 @@ class WorkspaceResource extends JsonResource
             : ($this->relationLoaded('memberships') ? $this->memberships->first() : null);
 
         $role = $membership?->role?->value ?? $membership?->role;
+        $status = $membership?->status?->value ?? $membership?->status;
 
         return [
             'id' => $this->id,
@@ -29,7 +30,9 @@ class WorkspaceResource extends JsonResource
             'slug' => $this->slug,
             'members_count' => $this->when(isset($this->members_count), (int)$this->members_count),
             'current_role' => $role,
-            'current_status' => $membership?->status?->value ?? $membership?->status,
+            'current_role_label' => $role ? __('roles.' . $role) : null,
+            'current_status' => $status,
+            'current_status_label' => $status ? __('statuses.' . $status) : null,
             'permissions' => $role ? WorkspacePermissions::forRole($role) : [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
