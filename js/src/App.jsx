@@ -12,6 +12,9 @@ import { WorkspaceListPage } from './pages/workspaces/WorkspaceListPage'
 import { WorkspaceMembersPage } from './pages/workspaces/WorkspaceMembersPage'
 import { WorkspaceAuditPage } from './pages/workspaces/WorkspaceAuditPage'
 import { WorkspaceSettingsPage } from './pages/workspaces/WorkspaceSettingsPage'
+import { ProductListPage } from './pages/products/ProductListPage'
+import { ProductDetailPage } from './pages/products/ProductDetailPage'
+import { ProductFormPage } from './pages/products/ProductFormPage'
 
 function App() {
   return (
@@ -66,6 +69,10 @@ function App() {
       >
         <Route index element={<Navigate to="workspaces" replace />} />
         <Route path="workspaces" element={<WorkspaceListPage />} />
+        <Route path="products" element={<ProductListPage />} />
+        <Route path="products/new" element={<ProductFormPage />} />
+        <Route path="products/:productId" element={<ProductDetailPage />} />
+        <Route path="products/:productId/edit" element={<ProductFormPage />} />
         <Route path="members" element={<WorkspaceMembersPage />} />
         <Route path="audit" element={<WorkspaceAuditPage />} />
         <Route path="settings" element={<WorkspaceSettingsPage />} />

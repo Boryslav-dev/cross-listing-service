@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AuditLogController;
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\UploadController;
 use App\Http\Controllers\Api\V1\WorkspaceController;
 use App\Http\Controllers\Api\V1\WorkspaceMemberController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +46,16 @@ Route::prefix('v1')->group(function (): void {
                 ->whereNumber('memberId');
 
             Route::get('/workspaces/{workspace}/audit-logs', [AuditLogController::class, 'index']);
+
+            // Products
+            Route::get('/workspaces/{workspace}/products', [ProductController::class, 'index']);
+            Route::post('/workspaces/{workspace}/products', [ProductController::class, 'store']);
+            Route::get('/workspaces/{workspace}/products/{product}', [ProductController::class, 'show']);
+            Route::patch('/workspaces/{workspace}/products/{product}', [ProductController::class, 'update']);
+            Route::delete('/workspaces/{workspace}/products/{product}', [ProductController::class, 'destroy']);
+
+            // Image upload
+            Route::post('/workspaces/{workspace}/uploads/products', [UploadController::class, 'uploadProductImage']);
         });
     });
 });

@@ -7,5 +7,7 @@ if [ -f composer.json ]; then
     composer install --no-interaction --prefer-dist
 fi
 
+php artisan storage:link --force 2>/dev/null || true
+
 php-fpm -D
 exec nginx -g 'daemon off;'

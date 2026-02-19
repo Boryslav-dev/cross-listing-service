@@ -32,8 +32,25 @@ export function buildFormErrorMessage(error, t) {
     return t('errors.forbidden')
   }
 
+  if (status === 404) {
+    return t('errors.not_found')
+  }
+
   if (status === 422) {
-    return error?.response?.data?.message ?? t('errors.invalid_data')
+    // Show first human-readable field error if available, otherwise generic message
+    const errors = error?.response?.data?.errors
+    if (errors && typeof errors === 'object') {
+      const firstKey = Object.keys(errors)[0]
+      const firstMsg = errors[firstKey]?.[0]
+      if (firstMsg) {
+        return firstMsg
+      }
+    }
+    return t('errors.invalid_data')
+  }
+
+  if (status >= 500) {
+    return t('errors.server')
   }
 
   return t('errors.server')

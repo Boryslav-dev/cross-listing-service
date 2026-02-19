@@ -27,15 +27,22 @@ export const Select = forwardRef(function Select(
   const selectedOption = options.find((opt) => String(opt.value) === String(value))
   const displayLabel = selectedOption?.label || placeholder || ''
 
+  const DROPDOWN_MAX_H = 240 // max-h-60 = 240px
+  const GAP = 6
+
   const updatePosition = useCallback(() => {
     if (!triggerRef.current) return
     const rect = triggerRef.current.getBoundingClientRect()
-    setDropdownStyle({
-      position: 'fixed',
-      top: rect.bottom + 6,
-      left: rect.left,
-      width: rect.width,
-    })
+    const spaceBelow = window.innerHeight - rect.bottom
+    const spaceAbove = rect.top
+
+    const openUpward = spaceBelow < DROPDOWN_MAX_H + GAP && spaceAbove > spaceBelow
+
+    setDropdownStyle(
+      openUpward
+        ? { position: 'fixed', bottom: window.innerHeight - rect.top + GAP, left: rect.left, width: rect.width }
+        : { position: 'fixed', top: rect.bottom + GAP, left: rect.left, width: rect.width },
+    )
   }, [])
 
   useEffect(() => {

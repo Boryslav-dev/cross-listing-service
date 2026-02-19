@@ -164,6 +164,91 @@ export const uk = {
       viewer: 'Спостерігач',
     },
   },
+  products: {
+    menu_label: 'Товари',
+    list_title: 'Товари',
+    list_subtitle: 'Керування каталогом товарів',
+    create_button: 'Додати товар',
+    create_dialog_title: 'Новий товар',
+    edit_dialog_title: 'Редагування товару',
+    autosave_saving: 'Збереження чернетки...',
+    autosave_saved: 'Чернетку збережено',
+    autosave_error: 'Автозбереження не вдалося',
+    edit_button: 'Редагувати',
+    copy_button: 'Дублювати',
+    delete_button: 'Видалити',
+    detail_title: 'Деталі товару',
+    copy_dialog_title: 'Дублювання товару',
+    copy_prefix: 'Копія',
+
+    // Form fields
+    form_name: 'Назва товару',
+    form_description: 'Опис',
+    form_sku: 'SKU (опціонально)',
+    form_price: 'Ціна',
+    form_currency: 'Валюта',
+    form_quantity: 'Кількість',
+    form_status: 'Статус',
+    form_images: 'Зображення товару',
+    form_content: 'Контент',
+    form_languages: 'Мови',
+    form_languages_required: 'Необхідно вибрати хоча б одну мову.',
+
+    // Table columns
+    table_image: 'Зображення',
+    table_name: 'Назва',
+    table_sku: 'SKU',
+    table_price: 'Ціна',
+    table_quantity: 'К-сть',
+    table_status: 'Статус',
+    table_action: 'Дія',
+
+    // Status values
+    status_draft: 'Чернетка',
+    status_active: 'Активний',
+    status_archived: 'Архівний',
+
+    // Search & Filters
+    search_placeholder: 'Пошук товарів...',
+    filter_status: 'Статус',
+    filter_all: 'Всі',
+
+    // Sorting
+    sort_newest: 'Спочатку нові',
+    sort_oldest: 'Спочатку старі',
+    sort_name_asc: 'Назва А → Я',
+    sort_name_desc: 'Назва Я → А',
+    sort_price_asc: 'Ціна ↑',
+    sort_price_desc: 'Ціна ↓',
+    sort_quantity_asc: 'Кількість ↑',
+    sort_quantity_desc: 'Кількість ↓',
+
+    // View modes
+    view_table: 'Таблиця',
+    view_grid_large: 'Велика сітка',
+    view_grid_medium: 'Середня сітка',
+    view_grid_small: 'Маленька сітка',
+
+    // Empty state
+    empty_title: 'Товарів ще немає',
+    empty_subtitle: 'Створіть перший товар, щоб почати роботу.',
+    search_empty_title: 'Товарів не знайдено',
+    search_empty_subtitle: 'Спробуйте змінити пошуковий запит або фільтри.',
+
+    // Delete confirmation
+    delete_confirm_title: 'Видалити товар?',
+    delete_confirm_message: 'Цю дію неможливо скасувати.',
+
+    // Language tabs
+    language_tab_en: 'English',
+    language_tab_uk: 'Українська',
+
+    // Image upload
+    upload_images: 'Завантажити зображення',
+    upload_drag_drop: 'Перетягніть зображення або натисніть для вибору',
+    upload_max_files: 'Максимум {max} зображень',
+    upload_remove: 'Видалити',
+  },
   toasts: {
     login_success: 'Ви успішно увійшли в систему.',
     register_success: 'Акаунт створено.',
@@ -177,13 +262,20 @@ export const uk = {
     member_invited: 'Запрошення надіслано.',
     member_role_updated: 'Роль учасника оновлено.',
     member_removed: 'Учасника видалено.',
+    product_created: 'Товар успішно створено.',
+    product_updated: 'Товар успішно оновлено.',
+    product_deleted: 'Товар успішно видалено.',
+    image_uploaded: 'Зображення завантажено.',
+    image_upload_failed: 'Не вдалося завантажити зображення.',
   },
   errors: {
     too_many_attempts: 'Забагато спроб, спробуйте пізніше.',
     invalid_credentials: 'Невірні облікові дані.',
     forbidden: 'Недостатньо прав.',
+    not_found: 'Ресурс не знайдено.',
     invalid_data: 'Перевірте введені дані.',
     server: 'Сталася помилка сервера. Спробуйте пізніше.',
+    sku_taken: 'Товар із таким SKU вже існує.',
   },
   validation: {
     email_invalid: 'Введіть коректний email.',
@@ -192,5 +284,8 @@ export const uk = {
     passwords_mismatch: 'Паролі не співпадають.',
     name_max: 'Максимум 255 символів.',
     token_missing: 'Токен не знайдено.',
+    name_required: "Назва обов'язкова.",
+    price_min: 'Ціна має бути не менше 0.',
+    quantity_min: 'Кількість має бути не менше 0.',
   },
 }

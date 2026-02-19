@@ -56,6 +56,10 @@ return [
 
     'frontend_url' => env('FRONTEND_URL', 'http://127.0.0.1:5173'),
 
+    'rate_limit_auth_login'  => env('RATE_LIMIT_AUTH_LOGIN', 10),
+    'rate_limit_auth'        => env('RATE_LIMIT_AUTH', 12),
+    'rate_limit_verification' => env('RATE_LIMIT_VERIFICATION', 6),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

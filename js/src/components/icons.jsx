@@ -21,9 +21,17 @@ export {
   UserCircle as UserCircleIcon,
   Settings as SettingsIcon,
   Trash2 as TrashIcon,
+  Pencil as EditIcon,
+  Copy as CopyIcon,
   RotateCcw as ResetIcon,
   LayoutGrid as GridIcon,
   List as ListIcon,
+  Upload as UploadIcon,
+  X as XIcon,
+  Package as PackageIcon,
+  Grid2x2 as Grid2x2Icon,
+  Grid3x3 as Grid3x3Icon,
+  Search as SearchIcon,
 } from 'lucide-react'
 
 export function GoogleIcon({ className, size = 18 }) {

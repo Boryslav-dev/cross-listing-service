@@ -8,7 +8,7 @@ export function Pagination({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  rowsPerPageOptions = [10, 20, 50],
+  rowsPerPageOptions = [10, 20, 50, 100],
   className,
 }) {
   const from = count === 0 ? 0 : page * rowsPerPage + 1

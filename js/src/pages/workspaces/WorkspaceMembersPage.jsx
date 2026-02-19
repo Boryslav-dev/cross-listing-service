@@ -227,7 +227,7 @@ export function WorkspaceMembersPage() {
                         }))}
                       />
                     ) : (
-                      member.role_label || roleLabelMap[member.role] || member.role
+                      roleLabelMap[member.role] || member.role
                     )}
                   </TableCell>
                   <TableCell>{member.status_label || member.status}</TableCell>
@@ -265,7 +265,6 @@ export function WorkspaceMembersPage() {
             setRowsPerPage(nextRowsPerPage)
             setPage(0)
           }}
-          rowsPerPageOptions={[10, 20, 50]}
         />
       </Card>
 

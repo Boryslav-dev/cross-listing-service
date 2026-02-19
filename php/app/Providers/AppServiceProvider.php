@@ -7,7 +7,9 @@ use App\Models\AuditLog;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceMembership;
+use App\Models\Product;
 use App\Policies\AuditLogPolicy;
+use App\Policies\ProductPolicy;
 use App\Policies\WorkspaceMemberPolicy;
 use App\Policies\WorkspacePolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -36,21 +38,25 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Workspace::class, WorkspacePolicy::class);
         Gate::policy(WorkspaceMembership::class, WorkspaceMemberPolicy::class);
         Gate::policy(AuditLog::class, AuditLogPolicy::class);
+        Gate::policy(Product::class, ProductPolicy::class);
 
         RateLimiter::for('auth-login', function (Request $request): Limit {
             $email = Str::lower((string) $request->input('email'));
 
-            return Limit::perMinute(5)->by($email.'|'.$request->ip());
+            return Limit::perMinute((int) config('app.rate_limit_auth_login', 10))
+                ->by($email.'|'.$request->ip());
         });
 
         RateLimiter::for('auth', function (Request $request): Limit {
-            return Limit::perMinute(10)->by((string) $request->ip());
+            return Limit::perMinute((int) config('app.rate_limit_auth', 12))
+                ->by((string) $request->ip());
         });
 
         RateLimiter::for('verification', function (Request $request): Limit {
             $key = $request->user()?->getAuthIdentifier() ?: $request->ip();
 
-            return Limit::perMinute(6)->by((string) $key);
+            return Limit::perMinute((int) config('app.rate_limit_verification', 6))
+                ->by((string) $key);
         });
 
         ResetPassword::createUrlUsing(function (User $user, string $token): string {

@@ -200,7 +200,6 @@ export function WorkspaceAuditPage() {
             setRowsPerPage(nextRowsPerPage)
             setPage(0)
           }}
-          rowsPerPageOptions={[10, 25, 50]}
         />
       </Card>
     </div>

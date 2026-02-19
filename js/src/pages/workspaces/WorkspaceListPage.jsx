@@ -157,8 +157,7 @@ export function WorkspaceListPage() {
       ) : viewMode === 'grid' ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {workspaces.map((workspace) => {
-            // Use backend-provided translated role label, fallback to frontend translation
-            const translatedRole = workspace.current_role_label || roleLabelMap[workspace.current_role] || workspace.current_role
+            const translatedRole = roleLabelMap[workspace.current_role] || workspace.current_role
             const avatarLetter = workspace.name.charAt(0).toUpperCase()
             const membersCount = workspace.members_count ?? 0
             const lastActive = formatDate(workspace.updated_at)
@@ -210,13 +209,12 @@ export function WorkspaceListPage() {
             </TableHead>
             <TableBody>
               {workspaces.map((workspace) => {
-                // Use backend-provided translated role label, fallback to frontend translation
-                const translatedRole = workspace.current_role_label || roleLabelMap[workspace.current_role] || workspace.current_role
+                const translatedRole = roleLabelMap[workspace.current_role] || workspace.current_role
                 const membersCount = workspace.members_count ?? 0
                 const lastActive = formatDate(workspace.updated_at)
 
                 return (
-                  <TableRow key={workspace.id} hover>
+                  <TableRow key={workspace.id} hover className="cursor-pointer" onClick={() => handleOpenWorkspace(workspace.id)}>
                     <TableCell>
                       <span className="text-sm font-semibold">{workspace.name}</span>
                     </TableCell>
@@ -234,7 +232,7 @@ export function WorkspaceListPage() {
                     <TableCell>
                       <span className="text-xs text-text-secondary">{lastActive}</span>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="right" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="outline"
                         size="sm"

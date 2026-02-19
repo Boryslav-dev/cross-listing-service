@@ -164,6 +164,91 @@ export const en = {
       viewer: 'Viewer',
     },
   },
+  products: {
+    menu_label: 'Products',
+    list_title: 'Products',
+    list_subtitle: 'Manage your product catalog',
+    create_button: 'Add Product',
+    create_dialog_title: 'Add New Product',
+    edit_dialog_title: 'Edit Product',
+    autosave_saving: 'Saving draft...',
+    autosave_saved: 'Draft saved',
+    autosave_error: 'Auto-save failed',
+    edit_button: 'Edit',
+    copy_button: 'Duplicate',
+    delete_button: 'Delete',
+    detail_title: 'Product Details',
+    copy_dialog_title: 'Duplicate Product',
+    copy_prefix: 'Copy of',
+
+    // Form fields
+    form_name: 'Product Name',
+    form_description: 'Description',
+    form_sku: 'SKU (optional)',
+    form_price: 'Price',
+    form_currency: 'Currency',
+    form_quantity: 'Quantity',
+    form_status: 'Status',
+    form_images: 'Product Images',
+    form_content: 'Content',
+    form_languages: 'Languages',
+    form_languages_required: 'At least one language must be enabled.',
+
+    // Table columns
+    table_image: 'Image',
+    table_name: 'Name',
+    table_sku: 'SKU',
+    table_price: 'Price',
+    table_quantity: 'Qty',
+    table_status: 'Status',
+    table_action: 'Action',
+
+    // Status values
+    status_draft: 'Draft',
+    status_active: 'Active',
+    status_archived: 'Archived',
+
+    // Search & Filters
+    search_placeholder: 'Search products...',
+    filter_status: 'Status',
+    filter_all: 'All',
+
+    // Sorting
+    sort_newest: 'Newest first',
+    sort_oldest: 'Oldest first',
+    sort_name_asc: 'Name A → Z',
+    sort_name_desc: 'Name Z → A',
+    sort_price_asc: 'Price ↑',
+    sort_price_desc: 'Price ↓',
+    sort_quantity_asc: 'Quantity ↑',
+    sort_quantity_desc: 'Quantity ↓',
+
+    // View modes
+    view_table: 'Table',
+    view_grid_large: 'Large Grid',
+    view_grid_medium: 'Medium Grid',
+    view_grid_small: 'Small Grid',
+
+    // Empty state
+    empty_title: 'No products yet',
+    empty_subtitle: 'Create your first product to get started.',
+    search_empty_title: 'No products found',
+    search_empty_subtitle: 'Try changing your search query or filters.',
+
+    // Delete confirmation
+    delete_confirm_title: 'Delete product?',
+    delete_confirm_message: 'This action cannot be undone.',
+
+    // Language tabs
+    language_tab_en: 'English',
+    language_tab_uk: 'Ukrainian',
+
+    // Image upload
+    upload_images: 'Upload Images',
+    upload_drag_drop: 'Drag & drop images or click to browse',
+    upload_max_files: 'Maximum {max} images',
+    upload_remove: 'Remove',
+  },
   toasts: {
     login_success: 'Signed in successfully.',
     register_success: 'Account created.',
@@ -177,13 +262,20 @@ export const en = {
     member_invited: 'Invitation sent.',
     member_role_updated: 'Member role updated.',
     member_removed: 'Member removed.',
+    product_created: 'Product created successfully.',
+    product_updated: 'Product updated successfully.',
+    product_deleted: 'Product deleted successfully.',
+    image_uploaded: 'Image uploaded.',
+    image_upload_failed: 'Failed to upload image.',
   },
   errors: {
     too_many_attempts: 'Too many attempts, please try again later.',
     invalid_credentials: 'Invalid credentials.',
     forbidden: 'Insufficient permissions.',
+    not_found: 'Resource not found.',
     invalid_data: 'Please check the entered data.',
     server: 'Server error. Please try again later.',
+    sku_taken: 'A product with this SKU already exists.',
   },
   validation: {
     email_invalid: 'Enter a valid email.',
@@ -192,5 +284,8 @@ export const en = {
     passwords_mismatch: 'Passwords do not match.',
     name_max: 'Maximum 255 characters.',
     token_missing: 'Token was not found.',
+    name_required: 'Name is required.',
+    price_min: 'Price must be at least 0.',
+    quantity_min: 'Quantity must be at least 0.',
   },
 }

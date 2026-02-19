@@ -13,6 +13,7 @@ import {
   LogoutIcon,
   UserCircleIcon,
   ExpandMoreIcon,
+  PackageIcon,
 } from '../icons'
 import { ROLE_OWNER } from '../../constants/roles'
 
@@ -20,6 +21,12 @@ function buildNavItems(t, currentWorkspace) {
   const isOwner = currentWorkspace?.current_role === ROLE_OWNER
 
   const items = [
+    {
+      key: 'products',
+      label: t('products.menu_label'),
+      icon: <PackageIcon size={18} />,
+      to: '/app/products',
+    },
     {
       key: 'members',
       label: t('workspace.menu_members'),
@@ -177,9 +184,14 @@ export function AppLayout() {
           </div>
         </header>
 
-        <main className="p-4 md:p-6">
+        <main className="p-4 md:p-6 pb-2">
           <Outlet />
         </main>
+
+        <footer className="px-4 md:px-6 py-4 mt-2 border-t border-divider/40 flex items-center justify-between text-xs text-text-secondary">
+          <span>© {new Date().getFullYear()} {t('app.name')}</span>
+          <span className="text-text-secondary/50">v0.1.0 · MVP</span>
+        </footer>
       </div>
     </div>
   )

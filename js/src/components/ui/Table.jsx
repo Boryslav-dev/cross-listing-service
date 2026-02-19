@@ -16,9 +16,13 @@ export function TableBody({ children, className }) {
   return <tbody className={cn('divide-y divide-divider/60', className)}>{children}</tbody>
 }
 
-export function TableRow({ children, hover = false, className }) {
+export function TableRow({ children, hover = false, className, onClick, ...rest }) {
   return (
-    <tr className={cn(hover && 'hover:bg-primary/[0.02] transition-colors', className)}>
+    <tr
+      className={cn(hover && 'hover:bg-primary/[0.02] transition-colors', className)}
+      onClick={onClick}
+      {...rest}
+    >
       {children}
     </tr>
   )
