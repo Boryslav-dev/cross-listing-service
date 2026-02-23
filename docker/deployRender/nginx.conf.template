@@ -1,0 +1,38 @@
+server {
+    listen ${PORT};
+    server_name _;
+
+    # ── Laravel API (PHP-FPM) ─────────────────────────────────────────────────
+    # Handles /api/*, /sanctum/*, /up (health check)
+    location ~ ^/(api|sanctum|up)(/|$) {
+        root /var/www/html/public;
+        try_files $uri $uri/ /index.php?$query_string;
+
+        location ~ \.php$ {
+            fastcgi_pass          127.0.0.1:9000;
+            fastcgi_index         index.php;
+            fastcgi_param         SCRIPT_FILENAME /var/www/html/public/index.php;
+            fastcgi_param         DOCUMENT_ROOT   /var/www/html/public;
+            include               fastcgi_params;
+        }
+    }
+
+    # ── Storage (symlinked public files) ─────────────────────────────────────
+    location ^~ /storage/ {
+        alias /var/www/html/public/storage/;
+        try_files $uri =404;
+    }
+
+    # ── React SPA ─────────────────────────────────────────────────────────────
+    root  /var/www/spa;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Block hidden files (except .well-known)
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
