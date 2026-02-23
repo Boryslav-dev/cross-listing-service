@@ -19,7 +19,7 @@ php artisan migrate --force
 # Cache config/routes/views for production performance
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
+php artisan view:cache 2>/dev/null || true
 
 # ── Start services ────────────────────────────────────────────────────────────
 php-fpm -D
