@@ -2,32 +2,35 @@ server {
     listen ${PORT};
     server_name _;
 
-    # ── Laravel API (PHP-FPM) ─────────────────────────────────────────────────
-    # Handles /api/*, /sanctum/*, /up (health check)
-    location ~ ^/(api|sanctum|up)(/|$) {
-        root /var/www/html/public;
-        try_files $uri $uri/ /index.php?$query_string;
+    # Server-level root for PHP app (used by PHP-FPM location)
+    root /var/www/html/public;
 
-        location ~ \.php$ {
-            fastcgi_pass          127.0.0.1:9000;
-            fastcgi_index         index.php;
-            fastcgi_param         SCRIPT_FILENAME /var/www/html/public/index.php;
-            fastcgi_param         DOCUMENT_ROOT   /var/www/html/public;
-            include               fastcgi_params;
-        }
+    # ── PHP-FPM handler ───────────────────────────────────────────────────────
+    # Must be at top level so internal redirects from try_files reach it
+    location ~ \.php$ {
+        fastcgi_pass          127.0.0.1:9000;
+        fastcgi_index         index.php;
+        # Hardcoded entry point — only index.php is ever executed
+        fastcgi_param         SCRIPT_FILENAME /var/www/html/public/index.php;
+        fastcgi_param         DOCUMENT_ROOT   /var/www/html/public;
+        include               fastcgi_params;
     }
 
     # ── Storage (symlinked public files) ─────────────────────────────────────
     location ^~ /storage/ {
-        alias /var/www/html/public/storage/;
         try_files $uri =404;
     }
 
-    # ── React SPA ─────────────────────────────────────────────────────────────
-    root  /var/www/spa;
-    index index.html;
+    # ── Laravel API: /api/*, /sanctum/*, /up (health check) ──────────────────
+    # try_files falls back to /index.php → matched by location ~ \.php$ above
+    location ~ ^/(api|sanctum|up)(/|$) {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
 
+    # ── React SPA — everything else ───────────────────────────────────────────
     location / {
+        root  /var/www/spa;
+        index index.html;
         try_files $uri $uri/ /index.html;
     }
 
