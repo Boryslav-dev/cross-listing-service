@@ -18,6 +18,7 @@ class Product extends Model
         'currency',
         'quantity',
         'status',
+        'condition',
         'metadata',
     ];
 

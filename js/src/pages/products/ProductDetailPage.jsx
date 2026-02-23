@@ -250,6 +250,12 @@ export function ProductDetailPage() {
             <label className="text-xs font-medium uppercase tracking-wide text-text-secondary">{t('products.form_status')}</label>
             <Badge size="md" variant={STATUS_VARIANT[product.status] ?? 'default'} className="mt-1">{t(`products.status_${product.status}`)}</Badge>
           </div>
+          <div>
+            <label className="text-xs font-medium uppercase tracking-wide text-text-secondary">{t('products.form_condition')}</label>
+            <p className="mt-1 font-semibold">
+              {product.condition ? t(`products.condition_${product.condition}`) : t('products.condition_not_specified')}
+            </p>
+          </div>
         </div>
       </Card>
 
@@ -271,7 +277,10 @@ export function ProductDetailPage() {
                   {translation.description && (
                     <div>
                       <label className="text-xs text-text-secondary">{t('products.form_description')}</label>
-                      <p className="text-sm text-text-secondary">{translation.description}</p>
+                      <div
+                        className="text-sm text-text-secondary mt-1 [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_p:not(:last-child)]:mb-1 [&_li]:mb-0.5"
+                        dangerouslySetInnerHTML={{ __html: translation.description }}
+                      />
                     </div>
                   )}
                 </div>

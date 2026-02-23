@@ -191,6 +191,13 @@ export const en = {
     form_status: 'Status',
     form_images: 'Product Images',
     form_content: 'Content',
+    form_condition: 'Condition',
+    condition_not_specified: 'Not specified',
+    condition_new: 'New',
+    condition_like_new: 'Like New',
+    condition_good: 'Good',
+    condition_fair: 'Fair',
+    condition_poor: 'Poor',
     form_languages: 'Languages',
     form_languages_required: 'At least one language must be enabled.',
 

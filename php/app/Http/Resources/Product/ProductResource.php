@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'currency' => $this->currency,
             'quantity' => $this->quantity,
             'status' => $this->status,
+            'condition' => $this->condition,
             'metadata' => $this->metadata,
             'translations' => ProductTranslationResource::collection($this->whenLoaded('translations')),
             'images' => ProductImageResource::collection($this->whenLoaded('images')),

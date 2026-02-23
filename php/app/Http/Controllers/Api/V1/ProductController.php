@@ -80,6 +80,7 @@ class ProductController extends Controller
                 'currency' => $payload['currency'],
                 'quantity' => $payload['quantity'],
                 'status' => $payload['status'],
+                'condition' => $payload['condition'] ?? null,
                 'metadata' => $payload['metadata'] ?? null,
             ]);
 
@@ -163,6 +164,7 @@ class ProductController extends Controller
                 'currency' => $payload['currency'] ?? $product->currency,
                 'quantity' => $payload['quantity'] ?? $product->quantity,
                 'status' => $payload['status'] ?? $product->status,
+                'condition' => array_key_exists('condition', $payload) ? $payload['condition'] : $product->condition,
                 'metadata' => $payload['metadata'] ?? $product->metadata,
             ])->save();
 

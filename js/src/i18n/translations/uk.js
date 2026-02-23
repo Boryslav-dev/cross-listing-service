@@ -191,6 +191,13 @@ export const uk = {
     form_status: 'Статус',
     form_images: 'Зображення товару',
     form_content: 'Контент',
+    form_condition: 'Стан',
+    condition_not_specified: 'Не вказано',
+    condition_new: 'Новий',
+    condition_like_new: 'Як новий',
+    condition_good: 'Хороший стан',
+    condition_fair: 'Задовільний стан',
+    condition_poor: 'Поганий стан',
     form_languages: 'Мови',
     form_languages_required: 'Необхідно вибрати хоча б одну мову.',
 

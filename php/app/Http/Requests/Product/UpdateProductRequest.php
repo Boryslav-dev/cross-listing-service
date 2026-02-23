@@ -37,6 +37,7 @@ class UpdateProductRequest extends FormRequest
             'currency' => ['sometimes', 'required', 'string', 'size:3'],
             'quantity' => ['sometimes', 'required', 'integer', 'min:0'],
             'status' => ['sometimes', 'required', Rule::in(['draft', 'active', 'archived'])],
+            'condition' => ['sometimes', 'nullable', 'string', Rule::in(['new', 'like_new', 'good', 'fair', 'poor'])],
             'metadata' => ['sometimes', 'nullable', 'array'],
             'translations' => ['sometimes', 'required', 'array', 'min:1'],
             'translations.*.locale' => ['required', 'string', Rule::in(['en', 'uk'])],

@@ -35,6 +35,7 @@ class StoreProductRequest extends FormRequest
             'currency' => ['required', 'string', 'size:3'],
             'quantity' => ['required', 'integer', 'min:0'],
             'status' => ['required', Rule::in(['draft', 'active', 'archived'])],
+            'condition' => ['nullable', 'string', Rule::in(['new', 'like_new', 'good', 'fair', 'poor'])],
             'metadata' => ['nullable', 'array'],
             'translations' => ['required', 'array', 'min:1'],
             'translations.*.locale' => ['required', 'string', Rule::in(['en', 'uk'])],

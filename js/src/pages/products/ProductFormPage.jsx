@@ -27,6 +27,7 @@ function buildProductSchema(t) {
     price: z.coerce.number().min(0, t('validation.price_min')),
     currency: z.string().length(3),
     quantity: z.coerce.number().int().min(0, t('validation.quantity_min')),
+    condition: z.string().nullable().optional(),
     translations: z.object({
       uk: z.object({
         name: z.string().min(1, t('validation.name_required')),
@@ -71,8 +72,9 @@ export function ProductFormPage() {
     defaultValues: copySource ? {
       sku: '',
       price: copySource.price ?? 0,
-      currency: copySource.currency ?? 'USD',
+      currency: copySource.currency ?? 'UAH',
       quantity: copySource.quantity ?? 0,
+      condition: copySource.condition ?? null,
       translations: {
         uk: {
           name: copySource.ukName ? `${t('products.copy_prefix')} ${copySource.ukName}` : '',
@@ -82,8 +84,9 @@ export function ProductFormPage() {
     } : {
       sku: '',
       price: 0,
-      currency: 'USD',
+      currency: 'UAH',
       quantity: 0,
+      condition: null,
       translations: {
         uk: { name: '', description: '' },
       },
@@ -108,6 +111,7 @@ export function ProductFormPage() {
         price: product.price,
         currency: product.currency,
         quantity: product.quantity,
+        condition: product.condition ?? null,
         translations: {
           uk: { name: ukTranslation?.name || '', description: ukTranslation?.description || '' },
         },
@@ -218,9 +222,31 @@ export function ProductFormPage() {
   })
 
   const currencyOptions = [
-    { value: 'USD', label: 'USD' },
-    { value: 'EUR', label: 'EUR' },
-    { value: 'UAH', label: 'UAH' },
+    { value: 'UAH', label: 'UAH — Гривня' },
+    { value: 'USD', label: 'USD — Dollar' },
+    { value: 'EUR', label: 'EUR — Euro' },
+    { value: 'GBP', label: 'GBP — Pound' },
+    { value: 'PLN', label: 'PLN — Złoty' },
+    { value: 'CZK', label: 'CZK — Koruna' },
+    { value: 'HUF', label: 'HUF — Forint' },
+    { value: 'RON', label: 'RON — Leu' },
+    { value: 'MDL', label: 'MDL — Leu moldovenesc' },
+    { value: 'BGN', label: 'BGN — Lev' },
+    { value: 'HRK', label: 'HRK — Kuna' },
+    { value: 'RSD', label: 'RSD — Dinar' },
+    { value: 'CHF', label: 'CHF — Franc' },
+    { value: 'SEK', label: 'SEK — Krona' },
+    { value: 'NOK', label: 'NOK — Krone' },
+    { value: 'DKK', label: 'DKK — Krone' },
+  ]
+
+  const conditionOptions = [
+    { value: '', label: t('products.condition_not_specified') },
+    { value: 'new', label: t('products.condition_new') },
+    { value: 'like_new', label: t('products.condition_like_new') },
+    { value: 'good', label: t('products.condition_good') },
+    { value: 'fair', label: t('products.condition_fair') },
+    { value: 'poor', label: t('products.condition_poor') },
   ]
 
   if (isEdit && productQuery.isLoading) {
@@ -354,6 +380,21 @@ export function ProductFormPage() {
               error={errors.quantity?.message}
               disabled={isSubmitting}
               {...register('quantity')}
+            />
+
+            <Controller
+              name="condition"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label={t('products.form_condition')}
+                  options={conditionOptions}
+                  error={errors.condition?.message}
+                  disabled={isSubmitting}
+                  value={field.value ?? ''}
+                  onChange={(val) => field.onChange(val || null)}
+                />
+              )}
             />
           </div>
         </Card>
