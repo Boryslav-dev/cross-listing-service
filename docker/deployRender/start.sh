@@ -10,6 +10,11 @@ envsubst '$PORT' \
 # ── Laravel bootstrap ─────────────────────────────────────────────────────────
 cd /var/www/html
 
+echo "[start] APP_KEY set:   $([ -n "${APP_KEY:-}" ] && echo YES || echo NO)"
+echo "[start] DB_HOST:       ${DB_HOST:-NOT SET}"
+echo "[start] REDIS_HOST:    ${REDIS_HOST:-NOT SET}"
+echo "[start] APP_URL:       ${APP_URL:-NOT SET}"
+
 php artisan storage:link --force 2>/dev/null || true
 
 # Run migrations (--force skips the confirmation prompt in production)
