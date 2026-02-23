@@ -16,10 +16,10 @@ php artisan storage:link --force 2>/dev/null || true
 # Note: if deploying multiple replicas, consider a one-off migration job
 php artisan migrate --force
 
-# Cache config/routes/views for production performance
+# Cache config/routes for production performance
+# view:cache is skipped — no Blade templates in this API application
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache 2>/dev/null || true
 
 # ── Start services ────────────────────────────────────────────────────────────
 php-fpm -D
